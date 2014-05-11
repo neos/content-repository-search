@@ -1,0 +1,13 @@
+{
+    "name": "typo3/typo3cr-searchcommons",
+    "type": "typo3-flow-package",
+    "description": "Add description here",
+    "require": {
+        "typo3/flow": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "TYPO3\\TYPO3CR\\SearchCommons": "Classes"
+        }
+    }
+}
