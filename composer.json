@@ -1,9 +1,10 @@
 {
     "name": "typo3/typo3cr-searchcommons",
     "type": "typo3-flow-package",
-    "description": "Add description here",
+    "description": "Common code and interface for a TYPO3CR search implementation",
     "require": {
-        "typo3/flow": "*"
+        "typo3/flow": "*",
+        "typo3/typo3cr": "*"
     },
     "autoload": {
         "psr-0": {
