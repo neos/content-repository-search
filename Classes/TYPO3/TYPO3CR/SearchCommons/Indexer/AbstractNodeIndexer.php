@@ -27,9 +27,14 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 */
 	protected $eelEvaluator;
 
-
 	/**
 	 * @Flow\Inject
+	 * @var \TYPO3\Flow\Configuration\ConfigurationManager
+	 */
+	protected $configurationManager;
+
+
+	/**
 	 * @var array
 	 */
 	protected $settings;
@@ -40,6 +45,12 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 * @var array
 	 */
 	protected $defaultContextVariables;
+
+	public function initializeObject($cause) {
+		if ($cause === \TYPO3\Flow\Object\ObjectManagerInterface::INITIALIZATIONCAUSE_CREATED) {
+			$this->settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.TYPO3CR.SearchCommons');
+		}
+	}
 
 	/**
 	 * Evaluate an Eel expression.
@@ -62,6 +73,10 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 			'value' => $value,
 			'persistenceObjectIdentifier' => $persistenceObjectIdentifier
 		));
+
+		if ($this->eelEvaluator instanceof \TYPO3\Flow\Object\DependencyInjection\DependencyProxy) {
+			$this->eelEvaluator->_activateDependency();
+		}
 
 		return EelUtility::evaluateEelExpression($expression, $this->eelEvaluator, $contextVariables);
 	}

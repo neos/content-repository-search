@@ -1,4 +1,0 @@
-TYPO3\TYPO3CR\SearchCommons\Indexer\AbstractNodeIndexer:
-  properties:
-    settings:
-      setting: TYPO3.TYPO3CR.SearchCommons
