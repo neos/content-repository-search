@@ -46,6 +46,11 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 */
 	protected $defaultContextVariables;
 
+	/**
+	 * Called by the Flow object framework after creating the object and resolving all dependencies.
+	 *
+	 * @param integer $cause Creation cause
+	 */
 	public function initializeObject($cause) {
 		if ($cause === \TYPO3\Flow\Object\ObjectManagerInterface::INITIALIZATIONCAUSE_CREATED) {
 			$this->settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.TYPO3CR.SearchCommons');
@@ -73,10 +78,6 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 			'value' => $value,
 			'persistenceObjectIdentifier' => $persistenceObjectIdentifier
 		));
-
-		if ($this->eelEvaluator instanceof \TYPO3\Flow\Object\DependencyInjection\DependencyProxy) {
-			$this->eelEvaluator->_activateDependency();
-		}
 
 		return EelUtility::evaluateEelExpression($expression, $this->eelEvaluator, $contextVariables);
 	}
