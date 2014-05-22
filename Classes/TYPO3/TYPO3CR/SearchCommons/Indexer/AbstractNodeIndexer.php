@@ -14,7 +14,6 @@ namespace TYPO3\TYPO3CR\SearchCommons\Indexer;
 use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\SearchCommons\Eel\EelUtility;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\NodeData;
 use TYPO3\TYPO3CR\SearchCommons\Exception\IndexingException;
 
 /**
@@ -115,7 +114,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 * @param array $fulltextData
 	 * @return array
 	 */
-	protected function extractPropertiesAndFulltext(Node $node, array &$fulltextData) {
+	protected function extractPropertiesAndFulltext(Node $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = NULL) {
 		$nodePropertiesToBeStoredInIndex = array();
 		$nodeType = $node->getNodeType();
 		$fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
@@ -131,6 +130,11 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 				if ($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'] !== '') {
 					$valueToStore = $this->evaluateEelExpression($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
 					$nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
+				}
+			} else {
+				// error handling if configured
+				if ($nonIndexedPropertyErrorHandler !== NULL) {
+					$nonIndexedPropertyErrorHandler($propertyName);
 				}
 			}
 
