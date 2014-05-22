@@ -36,6 +36,15 @@ interface QueryBuilderInterface {
 	public function limit($limit);
 
 	/**
+	 * output records starting at $from
+	 *
+	 *
+	 * @param integer $from
+	 * @return QueryBuilderInterface
+	 */
+	public function from($from);
+
+	/**
 	 * add an exact-match query for a given property
 	 *
 	 * @param string $propertyName
