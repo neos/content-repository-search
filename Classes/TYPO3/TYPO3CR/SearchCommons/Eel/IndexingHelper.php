@@ -87,7 +87,7 @@ class IndexingHelper implements ProtectedContextAwareInterface {
 	/**
 	 * Convert an array of nodes to an array of node identifiers
 	 *
-	 * @param array <NodeInterface> $nodes
+	 * @param array<NodeInterface> $nodes
 	 * @return array
 	 */
 	public function convertArrayOfNodesToArrayOfNodeIdentifiers($nodes) {
