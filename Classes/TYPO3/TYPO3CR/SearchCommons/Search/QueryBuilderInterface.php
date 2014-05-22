@@ -56,10 +56,10 @@ interface QueryBuilderInterface {
 	/**
 	 * Match the searchword against the fulltext index
 	 *
-	 * @param string $searchword
+	 * @param string $searchWord
 	 * @return QueryBuilderInterface
 	 */
-	public function fulltext($searchword);
+	public function fulltext($searchWord);
 
 	/**
 	 * Execute the query and return the list of nodes as result
