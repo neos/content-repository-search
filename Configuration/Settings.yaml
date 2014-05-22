@@ -46,11 +46,3 @@ TYPO3:
   TypoScript:
     defaultContext:
       Search: 'TYPO3\TYPO3CR\SearchCommons\Eel\SearchHelper'
-
-  Flow:
-    persistence:
-      doctrine:
-        eventListeners:
-          'TYPO3\TYPO3CR\SearchCommons\EventListener\NodeDataEventListener':
-            events: ['prePersist', 'preUpdate', 'preRemove', 'postFlush']
-            listener: 'TYPO3\TYPO3CR\SearchCommons\EventListener\NodeDataEventListener'

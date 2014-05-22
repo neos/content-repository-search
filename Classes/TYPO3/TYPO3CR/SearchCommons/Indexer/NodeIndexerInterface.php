@@ -12,7 +12,7 @@ namespace TYPO3\TYPO3CR\SearchCommons\Indexer;
  *                                                                              */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\NodeData;
+use TYPO3\TYPO3CR\Domain\Model\Node;
 
 
 /**
@@ -22,18 +22,21 @@ use TYPO3\TYPO3CR\Domain\Model\NodeData;
 interface NodeIndexerInterface {
 
 	/**
-	 * index this node, and add it to the current bulk request.
+	 * Schedule a node for indexing
 	 *
-	 * @param NodeData $nodeData
+	 * @param Node $node
+	 * @param mixed $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
 	 * @return void
 	 */
-	public function indexNode(NodeData $nodeData);
+	public function indexNode(Node $node, $targetWorkspace = NULL);
 
 	/**
-	 * @param NodeData $nodeData
+	 * Schedule a node for removal of the index
+	 *
+	 * @param Node $node
 	 * @return void
 	 */
-	public function removeNode(NodeData $nodeData);
+	public function removeNode(Node $node);
 
 	/**
 	 * Perform all changes to the index queued up. If an implementation directly changes the index this can be no operation.
