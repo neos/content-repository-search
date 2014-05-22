@@ -1,7 +1,10 @@
 TYPO3:
   TYPO3CR:
     SearchCommons:
+
+      # after how many entries should indexing occur at max?
       indexingBatchSize: 100
+
       defaultConfigurationPerType:
         string:
           indexing: "${value}"
@@ -24,7 +27,7 @@ TYPO3:
           indexing: ''
 
         references:
-          indexing: "${IndexingHelper.convertArrayOfNodesToArrayOfNodeIdentifiers(value)}"
+          indexing: "${Indexing.convertArrayOfNodesToArrayOfNodeIdentifiers(value)}"
 
         reference:
           indexing: "${value.identifier}"
@@ -41,7 +44,7 @@ TYPO3:
         String: 'TYPO3\Eel\Helper\StringHelper'
         Array: 'TYPO3\Eel\Helper\ArrayHelper'
         Date: 'TYPO3\Eel\Helper\DateHelper'
-        IndexingHelper: 'TYPO3\TYPO3CR\SearchCommons\Eel\IndexingHelper'
+        Indexing: 'TYPO3\TYPO3CR\SearchCommons\Eel\IndexingHelper'
 
   TypoScript:
     defaultContext:
