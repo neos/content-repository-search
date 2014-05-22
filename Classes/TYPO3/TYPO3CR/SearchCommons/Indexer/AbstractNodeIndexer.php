@@ -62,13 +62,13 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 * Evaluate an Eel expression.
 	 *
 	 * @param string $expression The Eel expression to evaluate
-	 * @param NodeData $node
+	 * @param Node $node
 	 * @param string $propertyName
 	 * @param mixed $value
-	 * @param string $persistenceObjectIdentifier
 	 * @return mixed The result of the evaluated Eel expression
+	 * @throws Exception
 	 */
-	protected function evaluateEelExpression($expression, NodeData $node, $propertyName, $value, $persistenceObjectIdentifier) {
+	protected function evaluateEelExpression($expression, Node $node, $propertyName, $value) {
 		if ($this->defaultContextVariables === NULL) {
 			$this->defaultContextVariables = EelUtility::getDefaultContextVariables($this->settings['defaultContext']);
 		}
@@ -77,7 +77,6 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 			'node' => $node,
 			'propertyName' => $propertyName,
 			'value' => $value,
-			'persistenceObjectIdentifier' => $persistenceObjectIdentifier
 		));
 
 		return EelUtility::evaluateEelExpression($expression, $this->eelEvaluator, $contextVariables);
