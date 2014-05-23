@@ -13,6 +13,7 @@ namespace TYPO3\TYPO3CR\SearchCommons\Eel;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
+use TYPO3\TYPO3CR\SearchCommons\Search\QueryBuilderInterface;
 
 /**
  *
@@ -26,6 +27,12 @@ class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface {
 	 */
 	protected $objectManager;
 
+	/**
+	 * Create a new Search Query underneath the given $contextNode
+	 *
+	 * @param NodeInterface $contextNode
+	 * @return QueryBuilderInterface
+	 */
 	public function query(NodeInterface $contextNode) {
 		$queryBuilder = $this->objectManager->get('TYPO3\TYPO3CR\SearchCommons\Search\QueryBuilderInterface');
 		return $queryBuilder->query($contextNode);

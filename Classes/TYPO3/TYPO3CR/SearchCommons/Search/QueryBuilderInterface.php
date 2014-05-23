@@ -36,6 +36,15 @@ interface QueryBuilderInterface {
 	public function limit($limit);
 
 	/**
+	 * output records starting at $from
+	 *
+	 *
+	 * @param integer $from
+	 * @return QueryBuilderInterface
+	 */
+	public function from($from);
+
+	/**
 	 * add an exact-match query for a given property
 	 *
 	 * @param string $propertyName
@@ -47,10 +56,10 @@ interface QueryBuilderInterface {
 	/**
 	 * Match the searchword against the fulltext index
 	 *
-	 * @param string $searchword
+	 * @param string $searchWord
 	 * @return QueryBuilderInterface
 	 */
-	public function fulltext($searchword);
+	public function fulltext($searchWord);
 
 	/**
 	 * Execute the query and return the list of nodes as result

@@ -12,7 +12,7 @@ namespace TYPO3\TYPO3CR\SearchCommons\Indexer;
  *                                                                              */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\NodeData;
+use TYPO3\TYPO3CR\Domain\Model\Node;
 
 /**
  * Indexer for Content Repository Nodes. Manages an indexing queue to allow for deferred indexing.
@@ -22,14 +22,19 @@ use TYPO3\TYPO3CR\Domain\Model\NodeData;
 class NodeIndexingManager {
 
 	/**
-	 * @var \SplObjectStorage<NodeData>
+	 * @var \SplObjectStorage<Node>
 	 */
 	protected $nodesToBeIndexed;
 
 	/**
-	 * @var \SplObjectStorage<NodeData>
+	 * @var \SplObjectStorage<Node>
 	 */
 	protected $nodesToBeRemoved;
+
+	/**
+	 * @var array
+	 */
+	protected $targetWorkspaceNamesForNodesToBeIndexed = array();
 
 	/**
 	 * the indexing batch size (from the settings)
@@ -62,33 +67,34 @@ class NodeIndexingManager {
 	/**
 	 * Schedule a node for indexing
 	 *
-	 * @param NodeData $nodeData
+	 * @param Node $node
+	 * @param mixed $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
 	 * @return void
 	 */
-	public function indexNode(NodeData $nodeData) {
-		if (!$this->nodesToBeIndexed->contains($nodeData)) {
-			$this->nodesToBeIndexed->attach($nodeData);
-			$this->nodesToBeRemoved->detach($nodeData);
-			$this->flushQueuesIfNeeded();
-		}
+	public function indexNode(Node $node, $targetWorkspace = NULL) {
+		$this->nodesToBeRemoved->detach($node);
+		$this->nodesToBeIndexed->attach($node);
+		$this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof \TYPO3\TYPO3CR\Domain\Model\Workspace ? $targetWorkspace->getName() : NULL;
+
+		$this->flushQueuesIfNeeded();
 	}
 
 	/**
 	 * Schedule a node for removal of the index
 	 *
-	 * @param NodeData $nodeData
+	 * @param Node $node
 	 * @return void
 	 */
-	public function removeNode(NodeData $nodeData) {
-		if (!$this->nodesToBeIndexed->contains($nodeData)) {
-			$this->nodesToBeIndexed->detach($nodeData);
-			$this->nodesToBeRemoved->attach($nodeData);
-			$this->flushQueuesIfNeeded();
-		}
+	public function removeNode(Node $node) {
+		$this->nodesToBeIndexed->detach($node);
+		$this->nodesToBeRemoved->attach($node);
+
+		$this->flushQueuesIfNeeded();
 	}
 
 	/**
-	 *
+	 * Flush the indexing/removal queues, actually processing them, if the
+	 * maximum indexing batch size has been reached.
 	 *
 	 * @return void
 	 */
@@ -104,18 +110,21 @@ class NodeIndexingManager {
 	 * @return void
 	 */
 	public function flushQueues() {
-		if ($this->nodeIndexer !== NULL) {
-
-			foreach ($this->nodesToBeIndexed as $nodeToBeIndexed) {
+		/** @var \TYPO3\TYPO3CR\Domain\Model\Node $nodeToBeIndexed  */
+		foreach ($this->nodesToBeIndexed as $nodeToBeIndexed) {
+			if (!isset($this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()])) {
 				$this->nodeIndexer->indexNode($nodeToBeIndexed);
+			} else {
+				$this->nodeIndexer->indexNode($nodeToBeIndexed, $this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()]);
 			}
-
-			foreach ($this->nodesToBeRemoved as $nodeToBeRemoved) {
-				$this->nodeIndexer->removeNode($nodeToBeRemoved);
-			}
-			$this->nodeIndexer->flush();
-			$this->nodesToBeIndexed = new \SplObjectStorage();
-			$this->nodesToBeRemoved = new \SplObjectStorage();
 		}
+
+		foreach ($this->nodesToBeRemoved as $nodeToBeRemoved) {
+			$this->nodeIndexer->removeNode($nodeToBeRemoved);
+		}
+		$this->nodeIndexer->flush();
+		$this->nodesToBeIndexed = new \SplObjectStorage();
+		$this->nodesToBeRemoved = new \SplObjectStorage();
+		$this->targetWorkspaceNamesForNodesToBeIndexed = array();
 	}
 }

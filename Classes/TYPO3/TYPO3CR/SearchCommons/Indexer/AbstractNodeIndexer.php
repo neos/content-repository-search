@@ -11,9 +11,10 @@ namespace TYPO3\TYPO3CR\SearchCommons\Indexer;
  * The TYPO3 project - inspiring people to share!                               *
  *                                                                              */
 
+use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\SearchCommons\Eel\EelUtility;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\NodeData;
+use TYPO3\TYPO3CR\SearchCommons\Exception\IndexingException;
 
 /**
  *
@@ -61,13 +62,13 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 * Evaluate an Eel expression.
 	 *
 	 * @param string $expression The Eel expression to evaluate
-	 * @param NodeData $node
+	 * @param Node $node
 	 * @param string $propertyName
 	 * @param mixed $value
-	 * @param string $persistenceObjectIdentifier
 	 * @return mixed The result of the evaluated Eel expression
+	 * @throws Exception
 	 */
-	protected function evaluateEelExpression($expression, NodeData $node, $propertyName, $value, $persistenceObjectIdentifier) {
+	protected function evaluateEelExpression($expression, Node $node, $propertyName, $value) {
 		if ($this->defaultContextVariables === NULL) {
 			$this->defaultContextVariables = EelUtility::getDefaultContextVariables($this->settings['defaultContext']);
 		}
@@ -76,63 +77,90 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 			'node' => $node,
 			'propertyName' => $propertyName,
 			'value' => $value,
-			'persistenceObjectIdentifier' => $persistenceObjectIdentifier
 		));
 
 		return EelUtility::evaluateEelExpression($expression, $this->eelEvaluator, $contextVariables);
 	}
 
 	/**
-	 * @param NodeData $nodeData
+	 * @param Node $node
 	 * @param string $propertyName
-	 * @param string $extractorConfiguration
-	 * @param array $fulltextData
+	 * @param string $fulltextExtractionExpression
+	 * @param array $fulltextIndexOfNode
+	 * @throws IndexingException
 	 */
-	protected function extractFulltext($nodeData, $propertyName, $extractorConfiguration, array &$fulltextData) {
-		$extractedFulltext = $this->evaluateEelExpression($extractorConfiguration, $nodeData, $propertyName, ($nodeData->hasProperty($propertyName) ? $nodeData->getProperty($propertyName) : NULL), NULL);
+	protected function extractFulltext(Node $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode) {
+		if ($fulltextExtractionExpression !== '') {
+			$extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
 
-		if (is_array($extractedFulltext) && count($extractedFulltext) > 0) {
-			foreach ($extractedFulltext as $bucket => $text) {
-				$fulltextData[$bucket] = (isset($fulltextData[$bucket]) ? ($fulltextData[$bucket] . $text) : $text);
+			if (!is_array($extractedFulltext)) {
+				throw new IndexingException('The fulltext index for property "' . $propertyName . '" of node "' . $node->getPath() . '" could not be retrieved; the Eel expression "' . $fulltextExtractionExpression . '" is no valid fulltext extraction expression.');
+			}
+
+			foreach ($extractedFulltext as $bucket => $value) {
+				if (!isset($fulltextIndexOfNode[$bucket])) {
+					$fulltextIndexOfNode[$bucket] = '';
+				}
+				$fulltextIndexOfNode[$bucket] .= ' ' . $value;
 			}
 		}
-
-		if (is_string($extractedFulltext) && !empty($extractedFulltext)) {
-			$fulltextData['text'] = (isset($fulltextData['text']) ? ($fulltextData['text'] . $text) : $text);
-		}
+		// TODO: also allow fulltextExtractor in settings!!
 	}
 
 	/**
 	 * Extracts all property values according to configuration and additionally adds to the referenced fulltextData array if needed.
 	 *
-	 * @param NodeData $nodeData
-	 * @param string $persistenceObjectIdentifier
+	 * @param Node $node
 	 * @param array $fulltextData
 	 * @return array
 	 */
-	protected function extractPropertiesAndFulltext(NodeData $nodeData, $persistenceObjectIdentifier, array &$fulltextData) {
+	protected function extractPropertiesAndFulltext(Node $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = NULL) {
 		$nodePropertiesToBeStoredInIndex = array();
-		$nodeType = $nodeData->getNodeType();
+		$nodeType = $node->getNodeType();
+		$fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
+
 		foreach ($nodeType->getProperties() as $propertyName => $propertyConfiguration) {
 			if (isset($propertyConfiguration['search']['indexing'])) {
 				if ($propertyConfiguration['search']['indexing'] !== '') {
-					$valueToStore = $this->evaluateEelExpression($propertyConfiguration['search']['indexing'], $nodeData, $propertyName, ($nodeData->hasProperty($propertyName) ? $nodeData->getProperty($propertyName) : NULL), $persistenceObjectIdentifier);
+					$valueToStore = $this->evaluateEelExpression($propertyConfiguration['search']['indexing'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
 
 					$nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
 				}
 			} elseif (isset($propertyConfiguration['type']) && isset($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'])) {
 				if ($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'] !== '') {
-					$valueToStore = $this->evaluateEelExpression($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'], $nodeData, $propertyName, ($nodeData->hasProperty($propertyName) ? $nodeData->getProperty($propertyName) : NULL), $persistenceObjectIdentifier);
+					$valueToStore = $this->evaluateEelExpression($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
 					$nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
+				}
+			} else {
+				// error handling if configured
+				if ($nonIndexedPropertyErrorHandler !== NULL) {
+					$nonIndexedPropertyErrorHandler($propertyName);
 				}
 			}
 
-			if (isset($propertyConfiguration['search']['fulltextExtractor'])) {
-				$this->extractFulltext($nodeData, $propertyName, $propertyConfiguration['search']['fulltextExtractor'], $fulltextData);
+			if ($fulltextIndexingEnabledForNode === TRUE && isset($propertyConfiguration['search']['fulltextExtractor'])) {
+				$this->extractFulltext($node, $propertyName, $propertyConfiguration['search']['fulltextExtractor'], $fulltextData);
 			}
+
 		}
 
 		return $nodePropertiesToBeStoredInIndex;
 	}
 
+	/**
+	 * Whether the node has fulltext indexing enabled.
+	 *
+	 * @param Node $node
+	 * @return boolean
+	 */
+	protected function isFulltextEnabled(Node $node) {
+		if ($node->getNodeType()->hasConfiguration('search')) {
+			$elasticSearchSettingsForNode = $node->getNodeType()->getConfiguration('search');
+			if (isset($elasticSearchSettingsForNode['fulltext']['enable']) && $elasticSearchSettingsForNode['fulltext']['enable'] === TRUE) {
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
 }
