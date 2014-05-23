@@ -155,8 +155,8 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 */
 	protected function isFulltextEnabled(Node $node) {
 		if ($node->getNodeType()->hasConfiguration('search')) {
-			$elasticSearchSettingsForNode = $node->getNodeType()->getConfiguration('search');
-			if (isset($elasticSearchSettingsForNode['fulltext']['enable']) && $elasticSearchSettingsForNode['fulltext']['enable'] === TRUE) {
+			$searchSettingsForNode = $node->getNodeType()->getConfiguration('search');
+			if (isset($searchSettingsForNode['fulltext']['enable']) && $searchSettingsForNode['fulltext']['enable'] === TRUE) {
 				return TRUE;
 			}
 		}
