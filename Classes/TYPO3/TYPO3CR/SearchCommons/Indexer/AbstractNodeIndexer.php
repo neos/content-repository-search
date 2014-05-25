@@ -112,6 +112,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 *
 	 * @param Node $node
 	 * @param array $fulltextData
+	 * @param callable $nonIndexedPropertyErrorHandler
 	 * @return array
 	 */
 	protected function extractPropertiesAndFulltext(Node $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = NULL) {
