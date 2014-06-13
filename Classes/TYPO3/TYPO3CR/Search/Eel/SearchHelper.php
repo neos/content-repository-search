@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\SearchCommons\Eel;
+namespace TYPO3\TYPO3CR\Search\Eel;
 
 /*                                                                              *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.SearchCommons". *
+ * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search". *
  *                                                                              *
  * It is free software; you can redistribute it and/or modify it under          *
  * the terms of the GNU General Public License, either version 3                *
@@ -13,7 +13,7 @@ namespace TYPO3\TYPO3CR\SearchCommons\Eel;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\SearchCommons\Search\QueryBuilderInterface;
+use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
 
 /**
  *
@@ -34,7 +34,7 @@ class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface {
 	 * @return QueryBuilderInterface
 	 */
 	public function query(NodeInterface $contextNode) {
-		$queryBuilder = $this->objectManager->get('TYPO3\TYPO3CR\SearchCommons\Search\QueryBuilderInterface');
+		$queryBuilder = $this->objectManager->get('TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface');
 		return $queryBuilder->query($contextNode);
 	}
 

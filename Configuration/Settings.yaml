@@ -1,6 +1,6 @@
 TYPO3:
   TYPO3CR:
-    SearchCommons:
+    Search:
 
       # after how many entries should indexing occur at max?
       indexingBatchSize: 100
@@ -44,8 +44,8 @@ TYPO3:
         String: 'TYPO3\Eel\Helper\StringHelper'
         Array: 'TYPO3\Eel\Helper\ArrayHelper'
         Date: 'TYPO3\Eel\Helper\DateHelper'
-        Indexing: 'TYPO3\TYPO3CR\SearchCommons\Eel\IndexingHelper'
+        Indexing: 'TYPO3\TYPO3CR\Search\Eel\IndexingHelper'
 
   TypoScript:
     defaultContext:
-      Search: 'TYPO3\TYPO3CR\SearchCommons\Eel\SearchHelper'
+      Search: 'TYPO3\TYPO3CR\Search\Eel\SearchHelper'

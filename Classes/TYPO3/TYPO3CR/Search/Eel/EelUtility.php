@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\TYPO3CR\SearchCommons\Eel;
+namespace TYPO3\TYPO3CR\Search\Eel;
 
 	/*                                                                        *
 	 * This script belongs to the TYPO3 Flow package "TYPO3.Eel".             *

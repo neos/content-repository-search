@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\SearchCommons\Indexer;
+namespace TYPO3\TYPO3CR\Search\Indexer;
 
 /*                                                                              *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.SearchCommons". *
+ * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search". *
  *                                                                              *
  * It is free software; you can redistribute it and/or modify it under          *
  * the terms of the GNU General Public License, either version 3                *
@@ -12,9 +12,9 @@ namespace TYPO3\TYPO3CR\SearchCommons\Indexer;
  *                                                                              */
 
 use TYPO3\TYPO3CR\Domain\Model\Node;
-use TYPO3\TYPO3CR\SearchCommons\Eel\EelUtility;
+use TYPO3\TYPO3CR\Search\Eel\EelUtility;
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\SearchCommons\Exception\IndexingException;
+use TYPO3\TYPO3CR\Search\Exception\IndexingException;
 
 /**
  *
@@ -54,7 +54,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 */
 	public function initializeObject($cause) {
 		if ($cause === \TYPO3\Flow\Object\ObjectManagerInterface::INITIALIZATIONCAUSE_CREATED) {
-			$this->settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.TYPO3CR.SearchCommons');
+			$this->settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.TYPO3CR.Search');
 		}
 	}
 

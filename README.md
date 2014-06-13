@@ -1,14 +1,11 @@
-TYPO3.TYPO3CR.SearchCommons
+TYPO3.TYPO3CR.Search
 ===========================
 
 Proposal for a TYPO3CR search common package
 
 Related Packages:
 
-* https://github.com/Flowpack/Flowpack.ElasticSearch.ContentRepositoryAdaptor/tree/dev-searchcommons (up to date)
-* https://github.com/skurfuerst/Flowpack.SearchPlugin (up to date)
-* https://github.com/kitsunet/Flowpack.SimpleSearch.ContentRepositoryAdaptor (not yet up to date)
+* https://github.com/Flowpack/Flowpack.ElasticSearch.ContentRepositoryAdaptor/tree/dev-searchcommons (needs to be adapted to rename)
+* https://github.com/skurfuerst/Flowpack.SearchPlugin (needs to be adapted to rename)
+* https://github.com/kitsunet/Flowpack.SimpleSearch.ContentRepositoryAdaptor (needs to be adapted to rename)
 
-TODO list:
-
-* rename to "TYPO3.TYPO3CR.Search"

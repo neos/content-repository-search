@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\SearchCommons;
+namespace TYPO3\TYPO3CR\Search;
 
 /*                                                                                                  *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.SearchCommons".                     *
+ * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search".                     *
  *                                                                                                  *
  * It is free software; you can redistribute it and/or modify it under                              *
  * the terms of the GNU Lesser General Public License, either version 3                             *
@@ -16,7 +16,7 @@ use TYPO3\Flow\Core\Bootstrap;
 use TYPO3\Flow\Package\Package as BasePackage;
 
 /**
- * The SearchCommons Package
+ * The Search Package
  */
 class Package extends BasePackage {
 
@@ -43,11 +43,11 @@ class Package extends BasePackage {
 	 * @param Bootstrap $bootstrap
 	 */
 	public function registerIndexingSlots(Bootstrap $bootstrap) {
-		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\TYPO3CR\Domain\Model\Node', 'nodeAdded', 'TYPO3\TYPO3CR\SearchCommons\Indexer\NodeIndexingManager', 'indexNode');
-		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\TYPO3CR\Domain\Model\Node', 'nodeUpdated', 'TYPO3\TYPO3CR\SearchCommons\Indexer\NodeIndexingManager', 'indexNode');
-		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\TYPO3CR\Domain\Model\Node', 'nodeRemoved', 'TYPO3\TYPO3CR\SearchCommons\Indexer\NodeIndexingManager', 'removeNode');
-		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\Neos\Service\PublishingService', 'nodePublished', 'TYPO3\TYPO3CR\SearchCommons\Indexer\NodeIndexingManager', 'indexNode', FALSE);
-		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\Flow\Persistence\Doctrine\PersistenceManager', 'allObjectsPersisted', 'TYPO3\TYPO3CR\SearchCommons\Indexer\NodeIndexingManager', 'flushQueues');
+		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\TYPO3CR\Domain\Model\Node', 'nodeAdded', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'indexNode');
+		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\TYPO3CR\Domain\Model\Node', 'nodeUpdated', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'indexNode');
+		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\TYPO3CR\Domain\Model\Node', 'nodeRemoved', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'removeNode');
+		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\Neos\Service\PublishingService', 'nodePublished', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'indexNode', FALSE);
+		$bootstrap->getSignalSlotDispatcher()->connect('TYPO3\Flow\Persistence\Doctrine\PersistenceManager', 'allObjectsPersisted', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'flushQueues');
 	}
 }
 

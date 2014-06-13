@@ -1,5 +1,5 @@
 {
-    "name": "typo3/typo3cr-searchcommons",
+    "name": "typo3/typo3cr-search",
     "type": "typo3-flow-package",
     "description": "Common code and interface for a TYPO3CR search implementation",
     "require": {
@@ -8,7 +8,7 @@
     },
     "autoload": {
         "psr-0": {
-            "TYPO3\\TYPO3CR\\SearchCommons": "Classes"
+            "TYPO3\\TYPO3CR\\Search": "Classes"
         }
     }
 }

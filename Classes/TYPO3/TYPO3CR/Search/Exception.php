@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\SearchCommons;
+namespace TYPO3\TYPO3CR\Search;
 
 /*                                                                                *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.SearchCommons".   *
+ * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search".   *
  *                                                                                *
  * It is free software; you can redistribute it and/or modify it under            *
  * the terms of the GNU Lesser General Public License, either version 3           *
@@ -12,7 +12,7 @@ namespace TYPO3\TYPO3CR\SearchCommons;
  *                                                                                */
 
 /**
- * A basic SearchCommons Exception
+ * A basic Search Exception
  */
 class Exception extends \TYPO3\Flow\Exception {
 

@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\TYPO3CR\SearchCommons\Search;
+namespace TYPO3\TYPO3CR\Search\Search;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
