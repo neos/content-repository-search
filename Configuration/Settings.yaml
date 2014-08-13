@@ -1,6 +1,8 @@
 TYPO3:
   TYPO3CR:
     Search:
+      realtimeIndexing:
+        enabled: TRUE
 
       # after how many entries should indexing occur at max?
       indexingBatchSize: 100
