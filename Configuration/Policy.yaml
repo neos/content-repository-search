@@ -1,7 +1,7 @@
+
 resources:
   methods:
     TYPO3_TYPO3CR_Search_PaginateController: 'method(TYPO3\TYPO3CR\Search\ViewHelpers\Widget\Controller\PaginateController->.*Action())'
-
 acls:
   Everybody:
     methods:
