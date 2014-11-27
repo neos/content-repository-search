@@ -14,11 +14,25 @@ namespace TYPO3\TYPO3CR\Search\Eel;
 use TYPO3\Eel\ProtectedContextAwareInterface;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
+use TYPO3\Media\Domain\Model\ImageVariant;
+use TYPO3\Media\Domain\Model\Asset;
 
 /**
  * IndexingHelper
  */
 class IndexingHelper implements ProtectedContextAwareInterface {
+
+	/**
+	 * @Flow\Inject
+	 * @var \Flowpack\ElasticSearch\ContentRepositoryAdaptor\LoggerInterface
+	 */
+	protected $logger;
+
+	/**
+	 * @var \TYPO3\Flow\Resource\Publishing\ResourcePublisher
+	 * @Flow\Inject
+	 */
+	protected $resourcePublisher;
 
 	/**
 	 * Build all path prefixes. From an input such as:
@@ -100,6 +114,69 @@ class IndexingHelper implements ProtectedContextAwareInterface {
 		}
 
 		return $nodeIdentifiers;
+	}
+
+
+	/**
+	 * @param $propertyName
+	 * @param  $node
+	 * @param ImageVariant $value
+	 * @return array
+	 */
+	//public function extractAssetInto($propertyName, $node, $value) {
+	public function extractImageVariant($propertyName, $node, $value) {
+
+		// media
+		// tag angabe ansonsten
+		// ähnliches wie fulltextParts bloß für Media
+
+		xdebug_break();
+
+		if($value !== NULL) {
+			$resource = $value->getResource();
+			// resourceManager
+			$path = $this->resourcePublisher->getPersistentResourceWebUri($value->getResource());
+
+
+			// nicht persistent
+			//$uri = $test = $value->getResource()->getUri();
+		}
+
+		$imageArr = array();
+
+		return $imageArr;
+
+	}
+
+
+	/**
+	 * @param $test
+	 * @param  $node
+	 * @param array<TYPO3\Media\Domain\Model\Asset> $value
+	 * @return array
+	 */
+	public function extractAssetList($test, $node, $value) {
+
+		xdebug_break();
+
+
+		/*
+			 persistenceManager
+			getIdentifierByObject($value)
+			 */
+
+		//statt fulltextPart AssetParts
+
+		foreach($value as $asset) {
+			$resource = $asset->getResource();
+			$path = $this->resourcePublisher->getPersistentResourceWebUri($asset->getResource());
+		}
+
+
+		$imageArr = array();
+
+		return $imageArr;
+
 	}
 
 	/**
