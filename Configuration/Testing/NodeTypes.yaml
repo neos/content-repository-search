@@ -1,12 +1,11 @@
-
 'TYPO3.TYPO3CR.Search.Test:BaseType':
-  superTypes: {  }
+  superTypes: []
+
 'TYPO3.TYPO3CR.Search.Test:Type1':
-  superTypes:
-    - 'TYPO3.TYPO3CR.Search.Test:BaseType'
+  superTypes: [ 'TYPO3.TYPO3CR.Search.Test:BaseType' ]
+
 'TYPO3.TYPO3CR.Search.Test:Type2':
-  superTypes: {  }
+  superTypes: []
+
 'TYPO3.TYPO3CR.Search.Test:Type3':
-  superTypes:
-    - 'TYPO3.TYPO3CR.Search.Test:Type1'
-    - 'TYPO3.TYPO3CR.Search.Test:Type2'
+  superTypes: [ 'TYPO3.TYPO3CR.Search.Test:Type1', 'TYPO3.TYPO3CR.Search.Test:Type2' ]

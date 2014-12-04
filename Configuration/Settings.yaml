@@ -1,32 +1,53 @@
-
 TYPO3:
   TYPO3CR:
     Search:
       realtimeIndexing:
-        enabled: true
+        enabled: TRUE
+
+      # after how many entries should indexing occur at max?
       indexingBatchSize: 100
+
       defaultConfigurationPerType:
         string:
-          indexing: '${value}'
+          indexing: "${value}"
+
         boolean:
-          indexing: '${value}'
+          indexing: "${value}"
+
         integer:
-          indexing: '${value}'
+          indexing: "${value}"
+
         date:
-          indexing: '${(value ? value.format(''Y-m-d\TH:i:s'') + ''Z'' : null)}'
-        TYPO3\Media\Domain\Model\Video:
+          indexing: "${(value ? value.format('Y-m-d\\TH:i:s') + 'Z' : null)}"
+
+        'TYPO3\Media\Domain\Model\Video':
+          # deliberately don't map or index this
           indexing: ''
-        TYPO3\Media\Domain\Model\ImageVariant:
+
+        'TYPO3\Media\Domain\Model\ImageVariant':
+          # deliberately don't map or index this
           indexing: ''
+
         references:
-          indexing: '${Indexing.convertArrayOfNodesToArrayOfNodeIdentifiers(value)}'
+          indexing: "${Indexing.convertArrayOfNodesToArrayOfNodeIdentifiers(value)}"
+
         reference:
-          indexing: '${value.identifier}'
+          indexing: "${value.identifier}"
+
+
+      # Default context objects that are available in Eel expressions
+      #
+      # New variables should be added with a package key prefix. Example:
+      #
+      #   defaultContext:
+      #     'MyPackage.String': 'MyPackage\Helper\StringHelper'
+      #
       defaultContext:
-        String: TYPO3\Eel\Helper\StringHelper
-        Array: TYPO3\Eel\Helper\ArrayHelper
-        Date: TYPO3\Eel\Helper\DateHelper
-        Indexing: TYPO3\TYPO3CR\Search\Eel\IndexingHelper
+        String: 'TYPO3\Eel\Helper\StringHelper'
+        Array: 'TYPO3\Eel\Helper\ArrayHelper'
+        Date: 'TYPO3\Eel\Helper\DateHelper'
+        Indexing: 'TYPO3\TYPO3CR\Search\Eel\IndexingHelper'
+
   TypoScript:
     defaultContext:
-      Search: TYPO3\TYPO3CR\Search\Eel\SearchHelper
+      Search: 'TYPO3\TYPO3CR\Search\Eel\SearchHelper'
