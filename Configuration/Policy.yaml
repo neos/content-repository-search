@@ -1,8 +1,11 @@
-resources:
-  methods:
-    TYPO3_TYPO3CR_Search_PaginateController: 'method(TYPO3\TYPO3CR\Search\ViewHelpers\Widget\Controller\PaginateController->.*Action())'
+privilegeTargets:
+  'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+    'TYPO3.TYPO3CR.Search:PaginateController':
+      matcher: 'method(TYPO3\TYPO3CR\Search\ViewHelpers\Widget\Controller\PaginateController->.*Action())'
 
-acls:
-  Everybody:
-    methods:
-      TYPO3_TYPO3CR_Search_PaginateController: GRANT
+roles:
+  'TYPO3.Flow:Everybody':
+    privileges:
+      -
+        privilegeTarget: 'TYPO3.TYPO3CR.Search:PaginateController'
+        permission: GRANT
