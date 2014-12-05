@@ -2,7 +2,7 @@
 namespace TYPO3\TYPO3CR\Search\Eel;
 
 /*                                                                              *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search". *
+ * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search".        *
  *                                                                              *
  * It is free software; you can redistribute it and/or modify it under          *
  * the terms of the GNU General Public License, either version 3                *
@@ -45,6 +45,5 @@ class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface {
 	public function allowsCallOfMethod($methodName) {
 		return TRUE;
 	}
-
 
 }
