@@ -12,7 +12,7 @@ namespace TYPO3\TYPO3CR\Search\Indexer;
  *                                                                              */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\Node;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
 
 /**
@@ -24,19 +24,19 @@ interface NodeIndexerInterface {
 	/**
 	 * Schedule a node for indexing
 	 *
-	 * @param Node $node
+	 * @param NodeInterface $node
 	 * @param mixed $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
 	 * @return void
 	 */
-	public function indexNode(Node $node, $targetWorkspace = NULL);
+	public function indexNode(NodeInterface $node, $targetWorkspace = NULL);
 
 	/**
 	 * Schedule a node for removal of the index
 	 *
-	 * @param Node $node
+	 * @param NodeInterface $node
 	 * @return void
 	 */
-	public function removeNode(Node $node);
+	public function removeNode(NodeInterface $node);
 
 	/**
 	 * Perform all changes to the index queued up. If an implementation directly changes the index this can be no operation.
