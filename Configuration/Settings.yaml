@@ -18,7 +18,7 @@ TYPO3:
           indexing: "${value}"
 
         date:
-          indexing: "${(value ? value.format('Y-m-d\\TH:i:s') + 'Z' : null)}"
+          indexing: "${(value ? Date.format(value, 'Y-m-d\\TH:i:s') + 'Z' : null)}"
 
         'TYPO3\Media\Domain\Model\Video':
           # deliberately don't map or index this
