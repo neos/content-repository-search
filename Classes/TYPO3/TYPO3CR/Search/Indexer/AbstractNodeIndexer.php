@@ -86,10 +86,41 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 * @param Node $node
 	 * @param string $propertyName
 	 * @param string $fulltextExtractionExpression
+	 * @param array array<TYPO3\Media\Domain\Model\AssetInterface>
+	 * @throws IndexingException
+	 * @return array
+	 */
+	protected function extractAssetsToFulltext(Node $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode) {
+
+		if ($fulltextExtractionExpression !== '') {
+
+			$extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
+
+			if (!is_array($extractedFulltext)) {
+				throw new IndexingException('The fulltext index for property "' . $propertyName . '" of node "' . $node->getPath() . '" could not be retrieved; the Eel expression "' . $fulltextExtractionExpression . '" is no valid fulltext extraction expression.');
+			}
+
+			foreach ($extractedFulltext as $bucket => $value) {
+				if (!isset($fulltextIndexOfNode[$bucket])) {
+					$fulltextIndexOfNode[$bucket] = array();
+				}
+				$fulltextIndexOfNode[$bucket] = $value ;
+			}
+		}
+
+		return $fulltextIndexOfNode;
+	}
+
+	/**
+	 * @param Node $node
+	 * @param string $propertyName
+	 * @param string $fulltextExtractionExpression
 	 * @param array $fulltextIndexOfNode
 	 * @throws IndexingException
 	 */
 	protected function extractFulltext(Node $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode) {
+
+		//xdebug_break();
 		if ($fulltextExtractionExpression !== '') {
 			$extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
 
@@ -121,6 +152,8 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 		$fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
 
 		foreach ($nodeType->getProperties() as $propertyName => $propertyConfiguration) {
+			$propertyConfiguration = $propertyConfiguration;
+
 			if (isset($propertyConfiguration['search']['indexing'])) {
 				if ($propertyConfiguration['search']['indexing'] !== '') {
 					$valueToStore = $this->evaluateEelExpression($propertyConfiguration['search']['indexing'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
@@ -141,6 +174,15 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 
 			if ($fulltextIndexingEnabledForNode === TRUE && isset($propertyConfiguration['search']['fulltextExtractor'])) {
 				$this->extractFulltext($node, $propertyName, $propertyConfiguration['search']['fulltextExtractor'], $fulltextData);
+			}
+
+			if ($fulltextIndexingEnabledForNode === TRUE && isset($propertyConfiguration['search']['assetListExtractor'])) {
+				//$nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
+
+				$valueToStore = $this->evaluateEelExpression($propertyConfiguration['search']['assetListExtractor'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
+				$nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
+
+				$this->extractAssetsToFulltext($node, $propertyName, $propertyConfiguration['search']['assetListExtractor'], $fulltextData);
 			}
 
 		}

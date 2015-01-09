@@ -34,6 +34,10 @@ TYPO3:
         reference:
           indexing: "${value.identifier}"
 
+        'TYPO3\Media\Domain\Model\AssetList':
+          indexing: "${Indexing.extractAssetList(value)}"
+
+
 
       # Default context objects that are available in Eel expressions
       #
