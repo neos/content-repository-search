@@ -14,11 +14,31 @@ namespace TYPO3\TYPO3CR\Search\Eel;
 use TYPO3\Eel\ProtectedContextAwareInterface;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
+use TYPO3\Media\Domain\Model\AssetInterface;
+use TYPO3\Media\Domain\Model\Asset;
 
 /**
  * IndexingHelper
  */
 class IndexingHelper implements ProtectedContextAwareInterface {
+
+	/**
+	 * @Flow\Inject
+	 * @var \Flowpack\ElasticSearch\ContentRepositoryAdaptor\LoggerInterface
+	 */
+	protected $logger;
+
+	/**
+	 * @var \TYPO3\Flow\Resource\Publishing\ResourcePublisher
+	 * @Flow\Inject
+	 */
+	protected $resourcePublisher;
+
+	/**
+	 * @Flow\Inject
+	 * @var \TYPO3\Flow\Persistence\PersistenceManagerInterface
+	 */
+	protected $persistenceManager;
 
 	/**
 	 * Build all path prefixes. From an input such as:
@@ -102,12 +122,61 @@ class IndexingHelper implements ProtectedContextAwareInterface {
 		return $nodeIdentifiers;
 	}
 
+
+	/**
+	 * @param AssetInterface $value
+	 * @return array
+	 */
+	public function extractAsset($value) {
+
+		$asset = array();
+		if($value !== NULL) {
+			$resource = $value->getResource();
+			$asset['assetIdentifiers'] = $this->persistenceManager->getIdentifierByObject($resource);
+			$asset['assetPaths'] = $this->resourcePublisher->getPersistentResourceWebUri($resource);
+			$asset['assetFilenames'] = $resource->getFilename();
+			$asset['assetFileExtensions'] = $resource->getFileExtension();
+		}
+		return $asset;
+	}
+
+	/**
+	 * @param array<TYPO3\Media\Domain\Model\AssetInterface> $value
+	 * @return array
+	 */
+	public function extractAssetList($value) {
+
+		$assetList = array(
+			'assetIdentifiers' => '',
+			'assetPaths' => '',
+			'assetFilenames' => '',
+			'assetFileExtensions' => ''
+		);
+
+		foreach($value as $asset) {
+			$asset = $this->extractAsset($asset);
+			$assetList['assetIdentifiers'] .= $asset['assetIdentifiers'] . ', ';
+			$assetList['assetPaths'] .= $asset['assetPaths'] . ', ';
+			$assetList['assetFilenames'] .= $asset['assetFilenames'] . ', ';
+			$assetList['assetFileExtensions'] .= $asset['assetFileExtensions'] . ', ';
+		}
+
+		$assetList['assetIdentifiers'] = trim($assetList['assetIdentifiers'], ', ');
+		$assetList['assetPaths'] = trim($assetList['assetPaths'], ', ');
+		$assetList['assetFilenames'] = trim($assetList['assetFilenames'], ', ');
+		$assetList['assetFileExtensions'] = trim($assetList['assetFileExtensions'], ', ');
+
+		return $assetList;
+	}
+
 	/**
 	 *
 	 * @param $string
+	 * @param $bucket
 	 * @return array
 	 */
-	public function extractHtmlTags($string) {
+	public function extractHtmlTags($string, $bucket = NULL) {
+
 		// prevents concatenated words when stripping tags afterwards
 		$string = str_replace(array('<', '>'), array(' <', '> '), $string);
 		// strip all tags except h1-6
@@ -136,8 +205,16 @@ class IndexingHelper implements ProtectedContextAwareInterface {
 				$string = substr($string, strlen($fullMatch));
 			} else {
 				// no h* found anymore in the remaining string
-				$parts['text'] .= $string;
-				break;
+				if ($bucket === NULL) {
+					$parts['text'] .= $string;
+					break;
+				} else {
+					if (!isset($parts[$bucket])) {
+						$parts[$bucket] = '';
+					}
+					$parts[$bucket] .= $string;
+					break;
+				}
 			}
 		}
 
