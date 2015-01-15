@@ -147,24 +147,24 @@ class IndexingHelper implements ProtectedContextAwareInterface {
 	public function extractAssetList($value) {
 
 		$assetList = array(
-			'assetIdentifiers' => "",
-			'assetPaths' => "",
-			'assetFilenames' => "",
-			'assetFileExtensions' => ""
+			'assetIdentifiers' => '',
+			'assetPaths' => '',
+			'assetFilenames' => '',
+			'assetFileExtensions' => ''
 		);
 
 		foreach($value as $asset) {
 			$asset = $this->extractAsset($asset);
-			$assetList['assetIdentifiers'] .= $asset['assetIdentifiers'] . ", ";
-			$assetList['assetPaths'] .= $asset['assetPaths'] . ", " ;
-			$assetList['assetFilenames'] .= $asset['assetFilenames'] . ", ";
-			$assetList['assetFileExtensions'] .= $asset['assetFileExtensions'] . ", ";
+			$assetList['assetIdentifiers'] .= $asset['assetIdentifiers'] . ', ';
+			$assetList['assetPaths'] .= $asset['assetPaths'] . ', ';
+			$assetList['assetFilenames'] .= $asset['assetFilenames'] . ', ';
+			$assetList['assetFileExtensions'] .= $asset['assetFileExtensions'] . ', ';
 		}
 
-		$assetList['assetIdentifiers'] = trim($assetList['assetIdentifiers'], " ,");
-		$assetList['assetPaths'] = trim($assetList['assetPaths'], " ,");
-		$assetList['assetFilenames'] = trim($assetList['assetFilenames'], " ,");
-		$assetList['assetFileExtensions'] = trim($assetList['assetFileExtensions'], " ,");
+		$assetList['assetIdentifiers'] = trim($assetList['assetIdentifiers'], ', ');
+		$assetList['assetPaths'] = trim($assetList['assetPaths'], ', ');
+		$assetList['assetFilenames'] = trim($assetList['assetFilenames'], ', ');
+		$assetList['assetFileExtensions'] = trim($assetList['assetFileExtensions'], ', ');
 
 		return $assetList;
 	}

@@ -120,7 +120,6 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 */
 	protected function extractFulltext(Node $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode) {
 
-		//xdebug_break();
 		if ($fulltextExtractionExpression !== '') {
 			$extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
 
@@ -152,7 +151,6 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 		$fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
 
 		foreach ($nodeType->getProperties() as $propertyName => $propertyConfiguration) {
-			$propertyConfiguration = $propertyConfiguration;
 
 			if (isset($propertyConfiguration['search']['indexing'])) {
 				if ($propertyConfiguration['search']['indexing'] !== '') {
