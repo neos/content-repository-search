@@ -12,7 +12,7 @@ namespace TYPO3\TYPO3CR\Search\Indexer;
  *                                                                              */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\Node;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
 /**
  * Indexer for Content Repository Nodes. Manages an indexing queue to allow for deferred indexing.
@@ -67,11 +67,11 @@ class NodeIndexingManager {
 	/**
 	 * Schedule a node for indexing
 	 *
-	 * @param Node $node
+	 * @param NodeInterface $node
 	 * @param mixed $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
 	 * @return void
 	 */
-	public function indexNode(Node $node, $targetWorkspace = NULL) {
+	public function indexNode(NodeInterface $node, $targetWorkspace = NULL) {
 		$this->nodesToBeRemoved->detach($node);
 		$this->nodesToBeIndexed->attach($node);
 		$this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof \TYPO3\TYPO3CR\Domain\Model\Workspace ? $targetWorkspace->getName() : NULL;
@@ -82,10 +82,10 @@ class NodeIndexingManager {
 	/**
 	 * Schedule a node for removal of the index
 	 *
-	 * @param Node $node
+	 * @param NodeInterface $node
 	 * @return void
 	 */
-	public function removeNode(Node $node) {
+	public function removeNode(NodeInterface $node) {
 		$this->nodesToBeIndexed->detach($node);
 		$this->nodesToBeRemoved->attach($node);
 
@@ -110,7 +110,7 @@ class NodeIndexingManager {
 	 * @return void
 	 */
 	public function flushQueues() {
-		/** @var \TYPO3\TYPO3CR\Domain\Model\Node $nodeToBeIndexed  */
+		/** @var \TYPO3\TYPO3CR\Domain\Model\NodeInterface $nodeToBeIndexed  */
 		foreach ($this->nodesToBeIndexed as $nodeToBeIndexed) {
 			if (!isset($this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()])) {
 				$this->nodeIndexer->indexNode($nodeToBeIndexed);

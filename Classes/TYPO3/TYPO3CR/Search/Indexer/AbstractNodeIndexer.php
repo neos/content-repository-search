@@ -11,7 +11,7 @@ namespace TYPO3\TYPO3CR\Search\Indexer;
  * The TYPO3 project - inspiring people to share!                               *
  *                                                                              */
 
-use TYPO3\TYPO3CR\Domain\Model\Node;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\Eel\Utility as EelUtility;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Search\Exception\IndexingException;
@@ -33,7 +33,6 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 * @var \TYPO3\Flow\Configuration\ConfigurationManager
 	 */
 	protected $configurationManager;
-
 
 	/**
 	 * @var array
@@ -62,13 +61,13 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	 * Evaluate an Eel expression.
 	 *
 	 * @param string $expression The Eel expression to evaluate
-	 * @param Node $node
+	 * @param NodeInterface $node
 	 * @param string $propertyName
 	 * @param mixed $value
 	 * @return mixed The result of the evaluated Eel expression
-	 * @throws Exception
+	 * @throws \TYPO3\Eel\Exception
 	 */
-	protected function evaluateEelExpression($expression, Node $node, $propertyName, $value) {
+	protected function evaluateEelExpression($expression, NodeInterface $node, $propertyName, $value) {
 		if ($this->defaultContextVariables === NULL) {
 			$this->defaultContextVariables = EelUtility::getDefaultContextVariables($this->settings['defaultContext']);
 		}
@@ -83,13 +82,13 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	}
 
 	/**
-	 * @param Node $node
+	 * @param NodeInterface $node
 	 * @param string $propertyName
 	 * @param string $fulltextExtractionExpression
 	 * @param array $fulltextIndexOfNode
 	 * @throws IndexingException
 	 */
-	protected function extractFulltext(Node $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode) {
+	protected function extractFulltext(NodeInterface $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode) {
 		if ($fulltextExtractionExpression !== '') {
 			$extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : NULL));
 
@@ -110,12 +109,12 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	/**
 	 * Extracts all property values according to configuration and additionally adds to the referenced fulltextData array if needed.
 	 *
-	 * @param Node $node
+	 * @param NodeInterface $node
 	 * @param array $fulltextData
 	 * @param callable $nonIndexedPropertyErrorHandler
 	 * @return array
 	 */
-	protected function extractPropertiesAndFulltext(Node $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = NULL) {
+	protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = NULL) {
 		$nodePropertiesToBeStoredInIndex = array();
 		$nodeType = $node->getNodeType();
 		$fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
@@ -151,10 +150,10 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface {
 	/**
 	 * Whether the node has fulltext indexing enabled.
 	 *
-	 * @param Node $node
+	 * @param NodeInterface $node
 	 * @return boolean
 	 */
-	protected function isFulltextEnabled(Node $node) {
+	protected function isFulltextEnabled(NodeInterface $node) {
 		if ($node->getNodeType()->hasConfiguration('search')) {
 			$searchSettingsForNode = $node->getNodeType()->getConfiguration('search');
 			if (isset($searchSettingsForNode['fulltext']['enable']) && $searchSettingsForNode['fulltext']['enable'] === TRUE) {
