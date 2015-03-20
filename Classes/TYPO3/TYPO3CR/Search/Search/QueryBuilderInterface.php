@@ -72,7 +72,7 @@ interface QueryBuilderInterface {
 	/**
 	 * Execute the query and return the list of nodes as result
 	 *
-	 * @return array<\TYPO3\TYPO3CR\Domain\Model\NodeInterface>
+	 * @return \Traversable<\TYPO3\TYPO3CR\Domain\Model\NodeInterface>
 	 */
 	public function execute();
 
