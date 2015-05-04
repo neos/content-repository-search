@@ -103,6 +103,25 @@ class IndexingHelper implements ProtectedContextAwareInterface {
 	}
 
 	/**
+	 * Convert an array of nodes to an array of node property
+	 *
+	 * @param array<NodeInterface> $nodes
+	 * @param string $propertyName
+	 * @return array
+	 */
+	public function convertArrayOfNodesToArrayOfNodeProperty($nodes, $propertyName) {
+		if (!is_array($nodes) && !$nodes instanceof \Traversable) {
+			return array();
+		}
+		$nodeProperties = array();
+		foreach ($nodes as $node) {
+			$nodeProperties[] = $node->getProperty($propertyName);
+		}
+
+		return $nodeProperties;
+	}
+
+	/**
 	 *
 	 * @param $string
 	 * @return array
