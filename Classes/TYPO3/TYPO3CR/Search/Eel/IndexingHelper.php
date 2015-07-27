@@ -13,7 +13,9 @@ namespace TYPO3\TYPO3CR\Search\Eel;
 
 use TYPO3\Eel\ProtectedContextAwareInterface;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Media\Domain\Model\AssetInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
+use TYPO3\TYPO3CR\Search\Exception\IndexingException;
 
 /**
  * IndexingHelper
@@ -159,6 +161,34 @@ class IndexingHelper implements ProtectedContextAwareInterface {
 		return array(
 			$bucketName => $string
 		);
+	}
+
+	/**
+	 * Index an asset list or a single asset (by base64-encoding-it);
+	 * in the same manner as expected by the ElasticSearch "attachment"
+	 * core plugin.
+	 *
+	 * @param $value
+	 * @return array|null|string
+	 * @throws IndexingException
+	 */
+	public function indexAsset($value) {
+		if ($value === NULL) {
+			return NULL;
+		} elseif (is_array($value)) {
+			$result = array();
+			foreach ($value as $element) {
+				$result[] = $this->indexAsset($element);
+			}
+			return $result;
+		} elseif ($value instanceof AssetInterface) {
+			$stream = $value->getResource()->getStream();
+			stream_filter_append($stream, 'convert.base64-encode');
+			$result = stream_get_contents($stream);
+			return $result;
+		} else {
+			throw new IndexingException('Value of type ' . gettype($value) . ' - ' . get_class($value) . ' could not be converted to asset binary.', 1437555909);
+		}
 	}
 
 	/**
