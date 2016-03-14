@@ -110,21 +110,29 @@ class NodeIndexingManager {
 	 * @return void
 	 */
 	public function flushQueues() {
-		/** @var \TYPO3\TYPO3CR\Domain\Model\NodeInterface $nodeToBeIndexed  */
-		foreach ($this->nodesToBeIndexed as $nodeToBeIndexed) {
-			if (!isset($this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()])) {
-				$this->nodeIndexer->indexNode($nodeToBeIndexed);
-			} else {
-				$this->nodeIndexer->indexNode($nodeToBeIndexed, $this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()]);
+		$flush = function () {
+			/** @var NodeInterface $nodeToBeIndexed  */
+			foreach ($this->nodesToBeIndexed as $nodeToBeIndexed) {
+				if (!isset($this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()])) {
+					$this->nodeIndexer->indexNode($nodeToBeIndexed);
+				} else {
+					$this->nodeIndexer->indexNode($nodeToBeIndexed, $this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()]);
+				}
 			}
-		}
 
-		foreach ($this->nodesToBeRemoved as $nodeToBeRemoved) {
-			$this->nodeIndexer->removeNode($nodeToBeRemoved);
+			foreach ($this->nodesToBeRemoved as $nodeToBeRemoved) {
+				$this->nodeIndexer->removeNode($nodeToBeRemoved);
+			}
+
+			$this->nodeIndexer->flush();
+			$this->nodesToBeIndexed = new \SplObjectStorage();
+			$this->nodesToBeRemoved = new \SplObjectStorage();
+			$this->targetWorkspaceNamesForNodesToBeIndexed = array();
+		};
+		if ($this->nodeIndexer instanceof BulkNodeIndexerInterface) {
+			$this->nodeIndexer->withBulkProcessing($flush);
+		} else {
+			$flush();
 		}
-		$this->nodeIndexer->flush();
-		$this->nodesToBeIndexed = new \SplObjectStorage();
-		$this->nodesToBeRemoved = new \SplObjectStorage();
-		$this->targetWorkspaceNamesForNodesToBeIndexed = array();
 	}
 }
