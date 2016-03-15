@@ -50,6 +50,11 @@ class NodeIndexingManager {
 	protected $nodeIndexer;
 
 	/**
+	 * @var boolean
+	 */
+	protected $enabled = true;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -72,6 +77,9 @@ class NodeIndexingManager {
 	 * @return void
 	 */
 	public function indexNode(NodeInterface $node, $targetWorkspace = NULL) {
+		if ($this->enabled === false) {
+			return;
+		}
 		$this->nodesToBeRemoved->detach($node);
 		$this->nodesToBeIndexed->attach($node);
 		$this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof \TYPO3\TYPO3CR\Domain\Model\Workspace ? $targetWorkspace->getName() : NULL;
@@ -86,6 +94,9 @@ class NodeIndexingManager {
 	 * @return void
 	 */
 	public function removeNode(NodeInterface $node) {
+		if ($this->enabled === false) {
+			return;
+		}
 		$this->nodesToBeIndexed->detach($node);
 		$this->nodesToBeRemoved->attach($node);
 
@@ -110,6 +121,9 @@ class NodeIndexingManager {
 	 * @return void
 	 */
 	public function flushQueues() {
+		if ($this->enabled === false) {
+			return;
+		}
 		$flush = function () {
 			/** @var NodeInterface $nodeToBeIndexed  */
 			foreach ($this->nodesToBeIndexed as $nodeToBeIndexed) {
@@ -134,5 +148,47 @@ class NodeIndexingManager {
 		} else {
 			$flush();
 		}
+	}
+
+	/**
+	 * The callback is executed with Indexing disabled
+	 *
+	 * @param \Closure $callback
+	 * @return void
+	 * @throws \Exception
+	 */
+	public function withoutIndexing(\Closure $callback)
+	{
+		$previousStatus = $this->enabled;
+		$this->enabled = false;
+		try {
+			/** @noinspection PhpUndefinedMethodInspection */
+			$callback->__invoke();
+		} catch (\Exception $exception) {
+			$this->enabled = $previousStatus;
+			throw $exception;
+		}
+		$this->enabled = $previousStatus;
+	}
+
+	/**
+	 * The callback is executed with Indexing enabled
+	 *
+	 * @param \Closure $callback
+	 * @return void
+	 * @throws \Exception
+	 */
+	public function withIndexing(\Closure $callback)
+	{
+		$previousStatus = $this->enabled;
+		$this->enabled = true;
+		try {
+			/** @noinspection PhpUndefinedMethodInspection */
+			$callback->__invoke();
+		} catch (\Exception $exception) {
+			$this->enabled = $previousStatus;
+			throw $exception;
+		}
+		$this->enabled = $previousStatus;
 	}
 }
