@@ -14,21 +14,19 @@ namespace TYPO3\TYPO3CR\Search\Indexer;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
-
 /**
  * Indexer for Content Repository Nodes with bulk mode support
  *
  */
-interface BulkNodeIndexerInterface {
-
-	/**
-	 * Perform indexing without checking about duplication document
-	 *
-	 * This is used during bulk indexing to improve performance
-	 *
-	 * @param callable $callback
-	 * @return void
-	 */
-	public function withBulkProcessing(callable $callback);
-
+interface BulkNodeIndexerInterface
+{
+    /**
+     * Perform indexing without checking about duplication document
+     *
+     * This is used during bulk indexing to improve performance
+     *
+     * @param callable $callback
+     * @return void
+     */
+    public function withBulkProcessing(callable $callback);
 }
