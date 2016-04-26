@@ -50,6 +50,11 @@ class NodeIndexingManager {
 	protected $nodeIndexer;
 
 	/**
+	 * @var boolean
+	 */
+	protected $enabled = true;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -134,5 +139,45 @@ class NodeIndexingManager {
 		} else {
 			$flush();
 		}
+	}
+
+	/**
+	 * Disable live indexing
+	 *
+	 * @param callable $callback
+	 * @throws \Exception
+	 */
+	public function withoutIndexing(callable $callback)
+	{
+		$enabled = $this->enabled;
+		$this->enabled = false;
+		try {
+			/** @noinspection PhpUndefinedMethodInspection */
+			$callback->__invoke();
+		} catch (\Exception $exception) {
+			$this->enabled = $enabled;
+			throw $exception;
+		}
+		$this->enabled = $enabled;
+	}
+
+	/**
+	 * Force live indexing
+	 *
+	 * @param callable $callback
+	 * @throws \Exception
+	 */
+	public function withIndexing(callable $callback)
+	{
+		$enabled = $this->enabled;
+		$this->enabled = true;
+		try {
+			/** @noinspection PhpUndefinedMethodInspection */
+			$callback->__invoke();
+		} catch (\Exception $exception) {
+			$this->enabled = $enabled;
+			throw $exception;
+		}
+		$this->enabled = $enabled;
 	}
 }
