@@ -1,7 +1,6 @@
 <?php
 namespace TYPO3\TYPO3CR\Search\Exception;
 
-
 /*                                                                              *
  * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search".        *
  *                                                                              *
@@ -17,6 +16,6 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * An Indexing Exception
  */
-class IndexingException extends \TYPO3\TYPO3CR\Search\Exception {
-
+class IndexingException extends \TYPO3\TYPO3CR\Search\Exception
+{
 }

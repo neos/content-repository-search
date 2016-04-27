@@ -20,24 +20,25 @@ use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
  *
  * This might still get refactored in the future.
  */
-class PaginateViewHelper extends AbstractWidgetViewHelper {
+class PaginateViewHelper extends AbstractWidgetViewHelper
+{
+    /**
+     * @Flow\Inject
+     * @var \TYPO3\TYPO3CR\Search\ViewHelpers\Widget\Controller\PaginateController
+     */
+    protected $controller;
 
-	/**
-	 * @Flow\Inject
-	 * @var \TYPO3\TYPO3CR\Search\ViewHelpers\Widget\Controller\PaginateController
-	 */
-	protected $controller;
-
-	/**
-	 * Render this view helper
-	 *
-	 * @param QueryBuilderInterface $query
-	 * @param string $as
-	 * @param array $configuration
-	 * @return string
-	 */
-	public function render(QueryBuilderInterface $query, $as, array $configuration = array('itemsPerPage' => 10, 'insertAbove' => FALSE, 'insertBelow' => TRUE, 'maximumNumberOfLinks' => 99)) {
-		$response = $this->initiateSubRequest();
-		return $response->getContent();
-	}
+    /**
+     * Render this view helper
+     *
+     * @param QueryBuilderInterface $query
+     * @param string $as
+     * @param array $configuration
+     * @return string
+     */
+    public function render(QueryBuilderInterface $query, $as, array $configuration = array('itemsPerPage' => 10, 'insertAbove' => false, 'insertBelow' => true, 'maximumNumberOfLinks' => 99))
+    {
+        $response = $this->initiateSubRequest();
+        return $response->getContent();
+    }
 }

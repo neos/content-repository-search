@@ -19,31 +19,32 @@ use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
  *
  * Eel Helper to start search queries
  */
-class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface {
+class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface
+{
+    /**
+     * @Flow\Inject
+     * @var \TYPO3\Flow\Object\ObjectManager
+     */
+    protected $objectManager;
 
-	/**
-	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Object\ObjectManager
-	 */
-	protected $objectManager;
+    /**
+     * Create a new Search Query underneath the given $contextNode
+     *
+     * @param NodeInterface $contextNode
+     * @return QueryBuilderInterface
+     */
+    public function query(NodeInterface $contextNode)
+    {
+        $queryBuilder = $this->objectManager->get('TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface');
+        return $queryBuilder->query($contextNode);
+    }
 
-	/**
-	 * Create a new Search Query underneath the given $contextNode
-	 *
-	 * @param NodeInterface $contextNode
-	 * @return QueryBuilderInterface
-	 */
-	public function query(NodeInterface $contextNode) {
-		$queryBuilder = $this->objectManager->get('TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface');
-		return $queryBuilder->query($contextNode);
-	}
-
-	/**
-	 * @param string $methodName
-	 * @return boolean
-	 */
-	public function allowsCallOfMethod($methodName) {
-		return TRUE;
-	}
-
+    /**
+     * @param string $methodName
+     * @return boolean
+     */
+    public function allowsCallOfMethod($methodName)
+    {
+        return true;
+    }
 }

@@ -17,34 +17,36 @@ use TYPO3\TYPO3CR\Search\Eel\IndexingHelper;
 /**
  * Functional Testcase for ElasticSearchHelper
  */
-class ElasticSearchHelperTest extends \TYPO3\Flow\Tests\FunctionalTestCase {
+class ElasticSearchHelperTest extends \TYPO3\Flow\Tests\FunctionalTestCase
+{
+    /**
+     * @var IndexingHelper
+     */
+    protected $helper;
 
-	/**
-	 * @var IndexingHelper
-	 */
-	protected $helper;
+    public function setUp()
+    {
+        $this->helper = new IndexingHelper();
+        parent::setUp();
+    }
 
-	public function setUp() {
-		$this->helper = new IndexingHelper();
-		parent::setUp();
-	}
+    /**
+     * @test
+     */
+    public function extractNodeTypesAndSupertypesWorks()
+    {
+        /* @var $nodeTypeManager NodeTypeManager */
+        $nodeTypeManager = $this->objectManager->get('TYPO3\TYPO3CR\Domain\Service\NodeTypeManager');
+        $nodeType = $nodeTypeManager->getNodeType('TYPO3.TYPO3CR.Search.Test:Type3');
 
-	/**
-	 * @test
-	 */
-	public function extractNodeTypesAndSupertypesWorks() {
-		/* @var $nodeTypeManager NodeTypeManager */
-		$nodeTypeManager = $this->objectManager->get('TYPO3\TYPO3CR\Domain\Service\NodeTypeManager');
-		$nodeType = $nodeTypeManager->getNodeType('TYPO3.TYPO3CR.Search.Test:Type3');
+        $expected = array(
+            'TYPO3.TYPO3CR.Search.Test:Type3',
+            'TYPO3.TYPO3CR.Search.Test:Type1',
+            'TYPO3.TYPO3CR.Search.Test:BaseType',
+            'TYPO3.TYPO3CR.Search.Test:Type2'
+        );
 
-		$expected = array(
-			'TYPO3.TYPO3CR.Search.Test:Type3',
-			'TYPO3.TYPO3CR.Search.Test:Type1',
-			'TYPO3.TYPO3CR.Search.Test:BaseType',
-			'TYPO3.TYPO3CR.Search.Test:Type2'
-		);
-
-		$actual = $this->helper->extractNodeTypeNamesAndSupertypes($nodeType);
-		$this->assertSame($expected, $actual);
-	}
+        $actual = $this->helper->extractNodeTypeNamesAndSupertypes($nodeType);
+        $this->assertSame($expected, $actual);
+    }
 }
