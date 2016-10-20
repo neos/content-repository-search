@@ -120,10 +120,10 @@ class NodeIndexingManager
         $flush = function () {
             /** @var NodeInterface $nodeToBeIndexed */
             foreach ($this->nodesToBeIndexed as $nodeToBeIndexed) {
-                if (!isset($this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()])) {
-                    $this->nodeIndexer->indexNode($nodeToBeIndexed);
-                } else {
+                if (isset($this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()])) {
                     $this->nodeIndexer->indexNode($nodeToBeIndexed, $this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()]);
+                } else {
+                    $this->nodeIndexer->indexNode($nodeToBeIndexed);
                 }
             }
 
