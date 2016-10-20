@@ -11,9 +11,14 @@ namespace TYPO3\TYPO3CR\Search;
  * source code.
  */
 
+use TYPO3\Flow\Configuration\ConfigurationManager;
 use TYPO3\Flow\Core\Booting\Step;
 use TYPO3\Flow\Core\Bootstrap;
 use TYPO3\Flow\Package\Package as BasePackage;
+use TYPO3\Flow\Persistence\Doctrine\PersistenceManager;
+use TYPO3\Neos\Service\PublishingService as NeosPublishingService;
+use TYPO3\TYPO3CR\Domain\Model\Node;
+use TYPO3\TYPO3CR\Domain\Model\Workspace;
 
 /**
  * The Search Package
@@ -31,7 +36,7 @@ class Package extends BasePackage
     {
         $dispatcher = $bootstrap->getSignalSlotDispatcher();
         $package = $this;
-        $dispatcher->connect('TYPO3\Flow\Core\Booting\Sequence', 'afterInvokeStep', function (Step $step) use ($package, $bootstrap) {
+        $dispatcher->connect(\TYPO3\Flow\Core\Booting\Sequence::class, 'afterInvokeStep', function (Step $step) use ($package, $bootstrap) {
             if ($step->getIdentifier() === 'typo3.flow:reflectionservice') {
                 $package->registerIndexingSlots($bootstrap);
             }
@@ -45,14 +50,16 @@ class Package extends BasePackage
      */
     public function registerIndexingSlots(Bootstrap $bootstrap)
     {
-        $configurationManager = $bootstrap->getObjectManager()->get('TYPO3\Flow\Configuration\ConfigurationManager');
-        $settings = $configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->getPackageKey());
+        $configurationManager = $bootstrap->getObjectManager()->get(ConfigurationManager::class);
+        $settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->getPackageKey());
         if (isset($settings['realtimeIndexing']['enabled']) && $settings['realtimeIndexing']['enabled'] === true) {
-            $bootstrap->getSignalSlotDispatcher()->connect('TYPO3\TYPO3CR\Domain\Model\Node', 'nodeAdded', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'indexNode');
-            $bootstrap->getSignalSlotDispatcher()->connect('TYPO3\TYPO3CR\Domain\Model\Node', 'nodeUpdated', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'indexNode');
-            $bootstrap->getSignalSlotDispatcher()->connect('TYPO3\TYPO3CR\Domain\Model\Node', 'nodeRemoved', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'removeNode');
-            $bootstrap->getSignalSlotDispatcher()->connect('TYPO3\Neos\Service\PublishingService', 'nodePublished', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'indexNode', false);
-            $bootstrap->getSignalSlotDispatcher()->connect('TYPO3\Flow\Persistence\Doctrine\PersistenceManager', 'allObjectsPersisted', 'TYPO3\TYPO3CR\Search\Indexer\NodeIndexingManager', 'flushQueues');
+            $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeAdded', Indexer\NodeIndexingManager::class, 'indexNode');
+            $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeUpdated', Indexer\NodeIndexingManager::class, 'indexNode');
+            $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeRemoved', Indexer\NodeIndexingManager::class, 'removeNode');
+            $bootstrap->getSignalSlotDispatcher()->connect(NeosPublishingService::class, 'nodePublished', Indexer\NodeIndexingManager::class, 'indexNode', false);
+            // make sure we always flush at the end, regardless of indexingBatchSize
+            $bootstrap->getSignalSlotDispatcher()->connect(PersistenceManager::class, 'allObjectsPersisted', Indexer\NodeIndexingManager::class, 'flushQueues');
         }
     }
 }
+

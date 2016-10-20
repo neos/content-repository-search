@@ -41,9 +41,9 @@ class IndexingHelper implements ProtectedContextAwareInterface
     public function buildAllPathPrefixes($path)
     {
         if (strlen($path) === 0) {
-            return array();
+            return [];
         } elseif ($path === '/') {
-            return array('/');
+            return ['/'];
         }
 
         $currentPath = '';
@@ -52,7 +52,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
         }
         $path = ltrim($path, '/');
 
-        $pathPrefixes = array();
+        $pathPrefixes = [];
         foreach (explode('/', $path) as $pathPart) {
             $currentPath .= $pathPart . '/';
             $pathPrefixes[] = rtrim($currentPath, '/');
@@ -69,7 +69,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
      */
     public function extractNodeTypeNamesAndSupertypes(NodeType $nodeType)
     {
-        $nodeTypeNames = array();
+        $nodeTypeNames = [];
         $this->extractNodeTypeNamesAndSupertypesInternal($nodeType, $nodeTypeNames);
         return array_values($nodeTypeNames);
     }
@@ -98,9 +98,9 @@ class IndexingHelper implements ProtectedContextAwareInterface
     public function convertArrayOfNodesToArrayOfNodeIdentifiers($nodes)
     {
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
-            return array();
+            return [];
         }
-        $nodeIdentifiers = array();
+        $nodeIdentifiers = [];
         foreach ($nodes as $node) {
             $nodeIdentifiers[] = $node->getIdentifier();
         }
@@ -118,9 +118,9 @@ class IndexingHelper implements ProtectedContextAwareInterface
     public function convertArrayOfNodesToArrayOfNodeProperty($nodes, $propertyName)
     {
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
-            return array();
+            return [];
         }
-        $nodeProperties = array();
+        $nodeProperties = [];
         foreach ($nodes as $node) {
             $nodeProperties[] = $node->getProperty($propertyName);
         }
@@ -136,15 +136,15 @@ class IndexingHelper implements ProtectedContextAwareInterface
     public function extractHtmlTags($string)
     {
         // prevents concatenated words when stripping tags afterwards
-        $string = str_replace(array('<', '>'), array(' <', '> '), $string);
+        $string = str_replace(['<', '>'], [' <', '> '], $string);
         // strip all tags except h1-6
         $string = strip_tags($string, '<h1><h2><h3><h4><h5><h6>');
 
-        $parts = array(
+        $parts = [
             'text' => ''
-        );
+        ];
         while (strlen($string) > 0) {
-            $matches = array();
+            $matches = [];
             if (preg_match('/<(h1|h2|h3|h4|h5|h6)[^>]*>.*?<\/\1>/ui', $string, $matches, PREG_OFFSET_CAPTURE)) {
                 $fullMatch = $matches[0][0];
                 $startOfMatch = $matches[0][1];
@@ -183,9 +183,9 @@ class IndexingHelper implements ProtectedContextAwareInterface
      */
     public function extractInto($bucketName, $string)
     {
-        return array(
+        return [
             $bucketName => $string
-        );
+        ];
     }
 
     /**
@@ -202,7 +202,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
         if ($value === null) {
             return null;
         } elseif (is_array($value)) {
-            $result = array();
+            $result = [];
             foreach ($value as $element) {
                 $result[] = $this->indexAsset($element);
             }

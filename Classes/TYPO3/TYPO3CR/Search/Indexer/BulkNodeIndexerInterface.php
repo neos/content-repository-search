@@ -12,7 +12,6 @@ namespace TYPO3\TYPO3CR\Search\Indexer;
  */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 
 /**
  * Indexer for Content Repository Nodes with bulk mode support

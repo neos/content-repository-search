@@ -11,9 +11,11 @@ namespace TYPO3\TYPO3CR\Search\Indexer;
  * source code.
  */
 
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\Eel\Utility as EelUtility;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Configuration\ConfigurationManager;
+use TYPO3\Flow\Object\ObjectManagerInterface;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Search\Exception\IndexingException;
 
 /**
@@ -30,7 +32,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
 
     /**
      * @Flow\Inject
-     * @var \TYPO3\Flow\Configuration\ConfigurationManager
+     * @var ConfigurationManager
      */
     protected $configurationManager;
 
@@ -53,8 +55,8 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      */
     public function initializeObject($cause)
     {
-        if ($cause === \TYPO3\Flow\Object\ObjectManagerInterface::INITIALIZATIONCAUSE_CREATED) {
-            $this->settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.TYPO3CR.Search');
+        if ($cause === ObjectManagerInterface::INITIALIZATIONCAUSE_CREATED) {
+            $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.TYPO3CR.Search');
         }
     }
 
@@ -74,11 +76,11 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
             $this->defaultContextVariables = EelUtility::getDefaultContextVariables($this->settings['defaultContext']);
         }
 
-        $contextVariables = array_merge($this->defaultContextVariables, array(
+        $contextVariables = array_merge($this->defaultContextVariables, [
             'node' => $node,
             'propertyName' => $propertyName,
             'value' => $value,
-        ));
+        ]);
 
         return EelUtility::evaluateEelExpression($expression, $this->eelEvaluator, $contextVariables);
     }
@@ -114,12 +116,12 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      *
      * @param NodeInterface $node
      * @param array $fulltextData
-     * @param callable $nonIndexedPropertyErrorHandler
+     * @param \Closure $nonIndexedPropertyErrorHandler
      * @return array
      */
     protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null)
     {
-        $nodePropertiesToBeStoredInIndex = array();
+        $nodePropertiesToBeStoredInIndex = [];
         $nodeType = $node->getNodeType();
         $fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
 

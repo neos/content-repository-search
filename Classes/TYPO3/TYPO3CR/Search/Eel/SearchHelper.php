@@ -35,7 +35,8 @@ class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface
      */
     public function query(NodeInterface $contextNode)
     {
-        $queryBuilder = $this->objectManager->get('TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface');
+        $queryBuilder = $this->objectManager->get(\TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface::class);
+
         return $queryBuilder->query($contextNode);
     }
 
