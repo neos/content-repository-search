@@ -16,7 +16,6 @@ use TYPO3\Flow\Core\Booting\Step;
 use TYPO3\Flow\Core\Bootstrap;
 use TYPO3\Flow\Package\Package as BasePackage;
 use TYPO3\Flow\Persistence\Doctrine\PersistenceManager;
-use TYPO3\Neos\Service\PublishingService as NeosPublishingService;
 use TYPO3\TYPO3CR\Domain\Model\Node;
 use TYPO3\TYPO3CR\Domain\Model\Workspace;
 
@@ -53,10 +52,12 @@ class Package extends BasePackage
         $configurationManager = $bootstrap->getObjectManager()->get(ConfigurationManager::class);
         $settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->getPackageKey());
         if (isset($settings['realtimeIndexing']['enabled']) && $settings['realtimeIndexing']['enabled'] === true) {
+            // handle changes to nodes
             $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeAdded', Indexer\NodeIndexingManager::class, 'indexNode');
             $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeUpdated', Indexer\NodeIndexingManager::class, 'indexNode');
             $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeRemoved', Indexer\NodeIndexingManager::class, 'removeNode');
-            $bootstrap->getSignalSlotDispatcher()->connect(NeosPublishingService::class, 'nodePublished', Indexer\NodeIndexingManager::class, 'indexNode', false);
+            // all publishing calls (Workspace, PublishingService) eventually trigger this - and publishing is triggered in various ways
+            $bootstrap->getSignalSlotDispatcher()->connect(Workspace::class, 'afterNodePublishing', Indexer\NodeIndexingManager::class, 'indexNode', false);
             // make sure we always flush at the end, regardless of indexingBatchSize
             $bootstrap->getSignalSlotDispatcher()->connect(PersistenceManager::class, 'allObjectsPersisted', Indexer\NodeIndexingManager::class, 'flushQueues');
         }
