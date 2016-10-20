@@ -23,7 +23,7 @@ A plugin to offer search functionality to users via TypoScript rendering.
 The NodeIndexingManager listens to signals emitted from TYPO3CR and the PersistenceManager if
 `realtimeIndexing.enabled` is `true` (which it defaults to).
 
-- `nodeAdded`, `nodeUpdated`, `nodePublished` trigger `indexNode()`
+- `nodeAdded`, `nodeUpdated`, `afterNodePublishing` trigger `indexNode()`
 - `nodeRemoved` triggers `removeNode()`
 - `allObjectsPersisted` triggers `flushQueues`
 
