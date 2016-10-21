@@ -12,6 +12,7 @@ namespace TYPO3\TYPO3CR\Search;
  */
 
 use TYPO3\Flow\Configuration\ConfigurationManager;
+use TYPO3\Flow\Core\Booting\Sequence;
 use TYPO3\Flow\Core\Booting\Step;
 use TYPO3\Flow\Core\Bootstrap;
 use TYPO3\Flow\Package\Package as BasePackage;
@@ -35,7 +36,7 @@ class Package extends BasePackage
     {
         $dispatcher = $bootstrap->getSignalSlotDispatcher();
         $package = $this;
-        $dispatcher->connect(\TYPO3\Flow\Core\Booting\Sequence::class, 'afterInvokeStep', function (Step $step) use ($package, $bootstrap) {
+        $dispatcher->connect(Sequence::class, 'afterInvokeStep', function (Step $step) use ($package, $bootstrap) {
             if ($step->getIdentifier() === 'typo3.flow:reflectionservice') {
                 $package->registerIndexingSlots($bootstrap);
             }

@@ -11,7 +11,9 @@ namespace TYPO3\TYPO3CR\Search\Eel;
  * source code.
  */
 
+use TYPO3\Eel\ProtectedContextAwareInterface;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Object\ObjectManager;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
 
@@ -19,11 +21,11 @@ use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
  *
  * Eel Helper to start search queries
  */
-class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface
+class SearchHelper implements ProtectedContextAwareInterface
 {
     /**
      * @Flow\Inject
-     * @var \TYPO3\Flow\Object\ObjectManager
+     * @var ObjectManager
      */
     protected $objectManager;
 
@@ -35,7 +37,7 @@ class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface
      */
     public function query(NodeInterface $contextNode)
     {
-        $queryBuilder = $this->objectManager->get(\TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface::class);
+        $queryBuilder = $this->objectManager->get(QueryBuilderInterface::class);
 
         return $queryBuilder->query($contextNode);
     }
