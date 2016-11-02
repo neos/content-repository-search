@@ -1,17 +1,19 @@
 <?php
 namespace TYPO3\TYPO3CR\Search\Eel;
 
-/*                                                                              *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search".        *
- *                                                                              *
- * It is free software; you can redistribute it and/or modify it under          *
- * the terms of the GNU General Public License, either version 3                *
- *  of the License, or (at your option) any later version.                      *
- *                                                                              *
- * The TYPO3 project - inspiring people to share!                               *
- *                                                                              */
+/*
+ * This file is part of the TYPO3.TYPO3CR.Search package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
 
+use TYPO3\Eel\ProtectedContextAwareInterface;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Object\ObjectManager;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
 
@@ -19,11 +21,11 @@ use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
  *
  * Eel Helper to start search queries
  */
-class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface
+class SearchHelper implements ProtectedContextAwareInterface
 {
     /**
      * @Flow\Inject
-     * @var \TYPO3\Flow\Object\ObjectManager
+     * @var ObjectManager
      */
     protected $objectManager;
 
@@ -35,7 +37,8 @@ class SearchHelper implements \TYPO3\Eel\ProtectedContextAwareInterface
      */
     public function query(NodeInterface $contextNode)
     {
-        $queryBuilder = $this->objectManager->get('TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface');
+        $queryBuilder = $this->objectManager->get(QueryBuilderInterface::class);
+
         return $queryBuilder->query($contextNode);
     }
 

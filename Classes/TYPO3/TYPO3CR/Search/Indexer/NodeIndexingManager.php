@@ -1,18 +1,19 @@
 <?php
 namespace TYPO3\TYPO3CR\Search\Indexer;
 
-/*                                                                              *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search".        *
- *                                                                              *
- * It is free software; you can redistribute it and/or modify it under          *
- * the terms of the GNU General Public License, either version 3                *
- *  of the License, or (at your option) any later version.                      *
- *                                                                              *
- * The TYPO3 project - inspiring people to share!                               *
- *                                                                              */
+/*
+ * This file is part of the TYPO3.TYPO3CR.Search package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
+use TYPO3\TYPO3CR\Domain\Model\Workspace;
 
 /**
  * Indexer for Content Repository Nodes. Manages an indexing queue to allow for deferred indexing.
@@ -34,7 +35,7 @@ class NodeIndexingManager
     /**
      * @var array
      */
-    protected $targetWorkspaceNamesForNodesToBeIndexed = array();
+    protected $targetWorkspaceNamesForNodesToBeIndexed = [];
 
     /**
      * the indexing batch size (from the settings)
@@ -77,7 +78,7 @@ class NodeIndexingManager
     {
         $this->nodesToBeRemoved->detach($node);
         $this->nodesToBeIndexed->attach($node);
-        $this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof \TYPO3\TYPO3CR\Domain\Model\Workspace ? $targetWorkspace->getName() : null;
+        $this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof Workspace ? $targetWorkspace->getName() : null;
 
         $this->flushQueuesIfNeeded();
     }
@@ -117,15 +118,16 @@ class NodeIndexingManager
     public function flushQueues()
     {
         $flush = function () {
-            /** @var NodeInterface $nodeToBeIndexed  */
+            /** @var NodeInterface $nodeToBeIndexed */
             foreach ($this->nodesToBeIndexed as $nodeToBeIndexed) {
-                if (!isset($this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()])) {
-                    $this->nodeIndexer->indexNode($nodeToBeIndexed);
-                } else {
+                if (isset($this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()])) {
                     $this->nodeIndexer->indexNode($nodeToBeIndexed, $this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()]);
+                } else {
+                    $this->nodeIndexer->indexNode($nodeToBeIndexed);
                 }
             }
 
+            /** @var NodeInterface $nodeToBeRemoved */
             foreach ($this->nodesToBeRemoved as $nodeToBeRemoved) {
                 $this->nodeIndexer->removeNode($nodeToBeRemoved);
             }
@@ -133,8 +135,9 @@ class NodeIndexingManager
             $this->nodeIndexer->flush();
             $this->nodesToBeIndexed = new \SplObjectStorage();
             $this->nodesToBeRemoved = new \SplObjectStorage();
-            $this->targetWorkspaceNamesForNodesToBeIndexed = array();
+            $this->targetWorkspaceNamesForNodesToBeIndexed = [];
         };
+
         if ($this->nodeIndexer instanceof BulkNodeIndexerInterface) {
             $this->nodeIndexer->withBulkProcessing($flush);
         } else {

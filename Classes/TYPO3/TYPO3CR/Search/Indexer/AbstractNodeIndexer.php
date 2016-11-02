@@ -1,19 +1,21 @@
 <?php
 namespace TYPO3\TYPO3CR\Search\Indexer;
 
-/*                                                                              *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search".        *
- *                                                                              *
- * It is free software; you can redistribute it and/or modify it under          *
- * the terms of the GNU General Public License, either version 3                *
- *  of the License, or (at your option) any later version.                      *
- *                                                                              *
- * The TYPO3 project - inspiring people to share!                               *
- *                                                                              */
+/*
+ * This file is part of the TYPO3.TYPO3CR.Search package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
 
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\Eel\Utility as EelUtility;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Configuration\ConfigurationManager;
+use TYPO3\Flow\Object\ObjectManagerInterface;
+use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use TYPO3\TYPO3CR\Search\Exception\IndexingException;
 
 /**
@@ -30,7 +32,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
 
     /**
      * @Flow\Inject
-     * @var \TYPO3\Flow\Configuration\ConfigurationManager
+     * @var ConfigurationManager
      */
     protected $configurationManager;
 
@@ -53,8 +55,8 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      */
     public function initializeObject($cause)
     {
-        if ($cause === \TYPO3\Flow\Object\ObjectManagerInterface::INITIALIZATIONCAUSE_CREATED) {
-            $this->settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.TYPO3CR.Search');
+        if ($cause === ObjectManagerInterface::INITIALIZATIONCAUSE_CREATED) {
+            $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.TYPO3CR.Search');
         }
     }
 
@@ -74,11 +76,11 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
             $this->defaultContextVariables = EelUtility::getDefaultContextVariables($this->settings['defaultContext']);
         }
 
-        $contextVariables = array_merge($this->defaultContextVariables, array(
+        $contextVariables = array_merge($this->defaultContextVariables, [
             'node' => $node,
             'propertyName' => $propertyName,
             'value' => $value,
-        ));
+        ]);
 
         return EelUtility::evaluateEelExpression($expression, $this->eelEvaluator, $contextVariables);
     }
@@ -114,12 +116,12 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      *
      * @param NodeInterface $node
      * @param array $fulltextData
-     * @param callable $nonIndexedPropertyErrorHandler
+     * @param \Closure $nonIndexedPropertyErrorHandler
      * @return array
      */
     protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null)
     {
-        $nodePropertiesToBeStoredInIndex = array();
+        $nodePropertiesToBeStoredInIndex = [];
         $nodeType = $node->getNodeType();
         $fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
 
