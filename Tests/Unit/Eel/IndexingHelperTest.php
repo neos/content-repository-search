@@ -51,6 +51,7 @@ class IndexingHelperTest extends \TYPO3\Flow\Tests\UnitTestCase
     {
         $input = '/foo/bar/baz/testing';
         $expected = array(
+            '/',
             '/foo',
             '/foo/bar',
             '/foo/bar/baz',
