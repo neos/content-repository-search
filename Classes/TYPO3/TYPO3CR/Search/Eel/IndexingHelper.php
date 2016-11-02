@@ -25,15 +25,17 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Build all path prefixes. From an input such as:
      *
-     *   foo/bar/baz
+     *   /foo/bar/baz
      *
      * it emits an array with:
      *
-     *   foo
-     *   foo/bar
-     *   foo/bar/baz
+     *   /
+     *   /foo
+     *   /foo/bar
+     *   /foo/bar/baz
      *
-     * This method works both with absolute and relative paths.
+     * This method works both with absolute and relative paths. If a relative path is given,
+     * the returned array will lack the first element and the leading slashes, obviously.
      *
      * @param string $path
      * @return array<string>
@@ -47,12 +49,13 @@ class IndexingHelper implements ProtectedContextAwareInterface
         }
 
         $currentPath = '';
+        $pathPrefixes = [];
         if ($path{0} === '/') {
             $currentPath = '/';
+            $pathPrefixes[] = $currentPath;
         }
         $path = ltrim($path, '/');
 
-        $pathPrefixes = [];
         foreach (explode('/', $path) as $pathPart) {
             $currentPath .= $pathPart . '/';
             $pathPrefixes[] = rtrim($currentPath, '/');
