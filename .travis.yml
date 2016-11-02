@@ -38,4 +38,4 @@ before_script:
   - ./flow flow:package:rescan
 script:
   - bin/phpunit --colors -c Build/BuildEssentials/PhpUnit/UnitTests.xml Packages/Application/TYPO3.TYPO3CR.Search/Tests/Unit
-  - bin/phpunit --colors --stop-on-failure -c Build/BuildEssentials/PhpUnit/FunctionalTests.xml Packages/Application/TYPO3.TYPO3CR.Search/Tests/Functional
+#  - bin/phpunit --colors --stop-on-failure -c Build/BuildEssentials/PhpUnit/FunctionalTests.xml Packages/Application/TYPO3.TYPO3CR.Search/Tests/Functional
