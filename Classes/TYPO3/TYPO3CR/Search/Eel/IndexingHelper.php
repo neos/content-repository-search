@@ -47,12 +47,13 @@ class IndexingHelper implements ProtectedContextAwareInterface
         }
 
         $currentPath = '';
+        $pathPrefixes = [];
         if ($path{0} === '/') {
             $currentPath = '/';
+            $pathPrefixes[] = $currentPath;
         }
         $path = ltrim($path, '/');
 
-        $pathPrefixes = array();
         foreach (explode('/', $path) as $pathPart) {
             $currentPath .= $pathPart . '/';
             $pathPrefixes[] = rtrim($currentPath, '/');
