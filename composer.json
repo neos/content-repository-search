@@ -1,14 +1,17 @@
 {
-    "name": "typo3/typo3cr-search",
-    "type": "typo3-flow-package",
-    "description": "Common code and interface for a TYPO3CR search implementation",
+    "name": "neos/content-repository-search",
+    "type": "neos-package",
+    "description": "Common code and interface for a Neos CR search implementation",
     "require": {
-        "typo3/flow": "*",
-        "typo3/typo3cr": "*"
+        "neos/flow": "~4.0 || dev-master",
+        "neos/content-repository": "*"
+    },
+    "replace": {
+        "typo3/typo3cr-search": "self.version"
     },
     "autoload": {
-        "psr-0": {
-            "TYPO3\\TYPO3CR\\Search": "Classes"
+        "psr-4": {
+            "Neos\\ContentRepository\\Search\\": "Classes"
         }
     }
 }
