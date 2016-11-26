@@ -1,53 +1,33 @@
+
 TYPO3:
-  TYPO3CR:
-    Search:
-      realtimeIndexing:
-        enabled: TRUE
-
-      # after how many entries should indexing occur at max?
-      indexingBatchSize: 100
-
-      defaultConfigurationPerType:
-        string:
-          indexing: "${value}"
-
-        boolean:
-          indexing: "${value}"
-
-        integer:
-          indexing: "${value}"
-
-        date:
-          indexing: "${(value ? Date.format(value, 'Y-m-d\\TH:i:s') + 'Z' : null)}"
-
-        'Neos\Media\Domain\Model\Video':
-          # deliberately don't map or index this
-          indexing: ''
-
-        'Neos\Media\Domain\Model\ImageInterface':
-          # deliberately don't map or index this
-          indexing: ''
-
-        references:
-          indexing: "${Indexing.convertArrayOfNodesToArrayOfNodeIdentifiers(value)}"
-
-        reference:
-          indexing: "${value.identifier}"
-
-
-      # Default context objects that are available in Eel expressions
-      #
-      # New variables should be added with a package key prefix. Example:
-      #
-      #   defaultContext:
-      #     'MyPackage.String': 'MyPackage\Helper\StringHelper'
-      #
-      defaultContext:
-        String: 'Neos\Eel\Helper\StringHelper'
-        Array: 'Neos\Eel\Helper\ArrayHelper'
-        Date: 'Neos\Eel\Helper\DateHelper'
-        Indexing: 'Neos\ContentRepository\Search\Eel\IndexingHelper'
-
   TypoScript:
     defaultContext:
-      Search: 'Neos\ContentRepository\Search\Eel\SearchHelper'
+      Search: Neos\ContentRepository\Search\Eel\SearchHelper
+Neos:
+  ContentRepository:
+    Search:
+      realtimeIndexing:
+        enabled: true
+      indexingBatchSize: 100
+      defaultConfigurationPerType:
+        string:
+          indexing: '${value}'
+        boolean:
+          indexing: '${value}'
+        integer:
+          indexing: '${value}'
+        date:
+          indexing: '${(value ? Date.format(value, ''Y-m-d\TH:i:s'') + ''Z'' : null)}'
+        Neos\Media\Domain\Model\Video:
+          indexing: ''
+        Neos\Media\Domain\Model\ImageInterface:
+          indexing: ''
+        references:
+          indexing: '${Indexing.convertArrayOfNodesToArrayOfNodeIdentifiers(value)}'
+        reference:
+          indexing: '${value.identifier}'
+      defaultContext:
+        String: Neos\Eel\Helper\StringHelper
+        Array: Neos\Eel\Helper\ArrayHelper
+        Date: Neos\Eel\Helper\DateHelper
+        Indexing: Neos\ContentRepository\Search\Eel\IndexingHelper

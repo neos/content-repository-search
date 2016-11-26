@@ -11,7 +11,7 @@ namespace Neos\ContentRepository\Search\Tests\Functional\Eel;
  * The TYPO3 project - inspiring people to share!                               *
  *                                                                              */
 
-use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
+use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\ContentRepository\Search\Eel\IndexingHelper;
 
 /**
@@ -36,7 +36,7 @@ class ElasticSearchHelperTest extends \Neos\Flow\Tests\FunctionalTestCase
     public function extractNodeTypesAndSupertypesWorks()
     {
         /* @var $nodeTypeManager NodeTypeManager */
-        $nodeTypeManager = $this->objectManager->get('TYPO3\TYPO3CR\Domain\Service\NodeTypeManager');
+        $nodeTypeManager = $this->objectManager->get('Neos\ContentRepository\Domain\Service\NodeTypeManager');
         $nodeType = $nodeTypeManager->getNodeType('Neos.ContentRepository.Search.Test:Type3');
 
         $expected = array(
