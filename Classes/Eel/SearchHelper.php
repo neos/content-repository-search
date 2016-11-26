@@ -11,7 +11,7 @@ namespace Neos\ContentRepository\Search\Eel;
  * source code.
  */
 
-use TYPO3\Eel\ProtectedContextAwareInterface;
+use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManager;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;

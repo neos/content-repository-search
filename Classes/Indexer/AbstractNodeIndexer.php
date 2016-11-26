@@ -11,7 +11,7 @@ namespace Neos\ContentRepository\Search\Indexer;
  * source code.
  */
 
-use TYPO3\Eel\Utility as EelUtility;
+use Neos\Eel\Utility as EelUtility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
@@ -26,7 +26,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
 {
     /**
      * @Flow\Inject(lazy=FALSE)
-     * @var \TYPO3\Eel\CompilingEvaluator
+     * @var \Neos\Eel\CompilingEvaluator
      */
     protected $eelEvaluator;
 
@@ -68,7 +68,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @param string $propertyName
      * @param mixed $value
      * @return mixed The result of the evaluated Eel expression
-     * @throws \TYPO3\Eel\Exception
+     * @throws \Neos\Eel\Exception
      */
     protected function evaluateEelExpression($expression, NodeInterface $node, $propertyName, $value)
     {

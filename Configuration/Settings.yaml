@@ -43,9 +43,9 @@ TYPO3:
       #     'MyPackage.String': 'MyPackage\Helper\StringHelper'
       #
       defaultContext:
-        String: 'TYPO3\Eel\Helper\StringHelper'
-        Array: 'TYPO3\Eel\Helper\ArrayHelper'
-        Date: 'TYPO3\Eel\Helper\DateHelper'
+        String: 'Neos\Eel\Helper\StringHelper'
+        Array: 'Neos\Eel\Helper\ArrayHelper'
+        Date: 'Neos\Eel\Helper\DateHelper'
         Indexing: 'Neos\ContentRepository\Search\Eel\IndexingHelper'
 
   TypoScript:
