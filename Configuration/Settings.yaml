@@ -24,7 +24,7 @@ TYPO3:
           # deliberately don't map or index this
           indexing: ''
 
-        'TYPO3\Media\Domain\Model\ImageVariant':
+        'TYPO3\Media\Domain\Model\ImageInterface':
           # deliberately don't map or index this
           indexing: ''
 
