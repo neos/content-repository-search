@@ -11,7 +11,7 @@ namespace Neos\ContentRepository\Search\ViewHelpers\Widget;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 use Neos\FluidAdaptor\Core\Widget\AbstractWidgetViewHelper;
 use Neos\ContentRepository\Search\Search\QueryBuilderInterface;
 

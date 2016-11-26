@@ -16,7 +16,7 @@ use Neos\ContentRepository\Search\Eel\IndexingHelper;
 /**
  * Testcase for IndexingHelper
  */
-class IndexingHelperTest extends \TYPO3\Flow\Tests\UnitTestCase
+class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
 {
     /**
      * @var IndexingHelper

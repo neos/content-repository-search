@@ -14,6 +14,6 @@ namespace Neos\ContentRepository\Search;
 /**
  * A basic Search Exception
  */
-class Exception extends \TYPO3\Flow\Exception
+class Exception extends \Neos\Flow\Exception
 {
 }

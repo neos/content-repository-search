@@ -12,9 +12,9 @@ namespace Neos\ContentRepository\Search\Indexer;
  */
 
 use TYPO3\Eel\Utility as EelUtility;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Configuration\ConfigurationManager;
-use TYPO3\Flow\ObjectManagement\ObjectManagerInterface;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Search\Exception\IndexingException;
 

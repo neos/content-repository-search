@@ -17,7 +17,7 @@ use Neos\ContentRepository\Search\Eel\IndexingHelper;
 /**
  * Functional Testcase for ElasticSearchHelper
  */
-class ElasticSearchHelperTest extends \TYPO3\Flow\Tests\FunctionalTestCase
+class ElasticSearchHelperTest extends \Neos\Flow\Tests\FunctionalTestCase
 {
     /**
      * @var IndexingHelper

@@ -11,7 +11,7 @@ namespace Neos\ContentRepository\Search\ViewHelpers\Widget\Controller;
  * source code.
  */
 
-use TYPO3\Flow\Utility\Arrays;
+use Neos\Flow\Utility\Arrays;
 use TYPO3\Fluid\Core\Widget\AbstractWidgetController;
 
 /**
