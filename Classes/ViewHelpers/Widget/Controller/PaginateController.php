@@ -12,7 +12,7 @@ namespace Neos\ContentRepository\Search\ViewHelpers\Widget\Controller;
  */
 
 use Neos\Utility\Arrays;
-use TYPO3\Fluid\Core\Widget\AbstractWidgetController;
+use Neos\FluidAdaptor\Core\Widget\AbstractWidgetController;
 
 /**
  * Controller for the paginate widget
