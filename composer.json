@@ -13,5 +13,13 @@
         "psr-4": {
             "Neos\\ContentRepository\\Search\\": "Classes"
         }
+    },
+    "extra": {
+        "applied-flow-migrations": [
+            "TYPO3.Flow-201212051340",
+            "TYPO3.Neos.NodeTypes-130516220640",
+            "TYPO3.Neos-201407061038",
+            "TYPO3.Flow-20141113121400"
+        ]
     }
 }
