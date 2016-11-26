@@ -1,8 +1,4 @@
 
-TYPO3:
-  TypoScript:
-    defaultContext:
-      Search: Neos\ContentRepository\Search\Eel\SearchHelper
 Neos:
   ContentRepository:
     Search:
@@ -31,3 +27,6 @@ Neos:
         Array: Neos\Eel\Helper\ArrayHelper
         Date: Neos\Eel\Helper\DateHelper
         Indexing: Neos\ContentRepository\Search\Eel\IndexingHelper
+  Fusion:
+    defaultContext:
+      Search: Neos\ContentRepository\Search\Eel\SearchHelper
