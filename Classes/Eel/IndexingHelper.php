@@ -13,7 +13,7 @@ namespace Neos\ContentRepository\Search\Eel;
 
 use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Flow\Annotations as Flow;
-use TYPO3\Media\Domain\Model\AssetInterface;
+use Neos\Media\Domain\Model\AssetInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeType;
 use Neos\ContentRepository\Search\Exception\IndexingException;
 

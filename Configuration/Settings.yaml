@@ -20,11 +20,11 @@ TYPO3:
         date:
           indexing: "${(value ? Date.format(value, 'Y-m-d\\TH:i:s') + 'Z' : null)}"
 
-        'TYPO3\Media\Domain\Model\Video':
+        'Neos\Media\Domain\Model\Video':
           # deliberately don't map or index this
           indexing: ''
 
-        'TYPO3\Media\Domain\Model\ImageInterface':
+        'Neos\Media\Domain\Model\ImageInterface':
           # deliberately don't map or index this
           indexing: ''
 
