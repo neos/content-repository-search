@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\TYPO3CR\Search;
+namespace Neos\ContentRepository\Search;
 
 /*
  * This file is part of the TYPO3.TYPO3CR.Search package.

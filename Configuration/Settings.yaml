@@ -46,8 +46,8 @@ TYPO3:
         String: 'TYPO3\Eel\Helper\StringHelper'
         Array: 'TYPO3\Eel\Helper\ArrayHelper'
         Date: 'TYPO3\Eel\Helper\DateHelper'
-        Indexing: 'TYPO3\TYPO3CR\Search\Eel\IndexingHelper'
+        Indexing: 'Neos\ContentRepository\Search\Eel\IndexingHelper'
 
   TypoScript:
     defaultContext:
-      Search: 'TYPO3\TYPO3CR\Search\Eel\SearchHelper'
+      Search: 'Neos\ContentRepository\Search\Eel\SearchHelper'

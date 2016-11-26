@@ -1,4 +1,4 @@
-# TYPO3.TYPO3CR.Search
+# Neos.ContentRepository.Search
 
 A TYPO3CR search common package used to implement concrete indexing and search functionality.
 

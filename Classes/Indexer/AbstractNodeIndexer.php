@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Indexer;
+namespace Neos\ContentRepository\Search\Indexer;
 
 /*
  * This file is part of the TYPO3.TYPO3CR.Search package.
@@ -16,7 +16,7 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Configuration\ConfigurationManager;
 use TYPO3\Flow\Object\ObjectManagerInterface;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\Search\Exception\IndexingException;
+use Neos\ContentRepository\Search\Exception\IndexingException;
 
 /**
  *

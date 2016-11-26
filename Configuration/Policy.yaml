@@ -2,7 +2,7 @@
 privilegeTargets:
   TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
     TYPO3_TYPO3CR_Search_PaginateController:
-      matcher: 'method(TYPO3\TYPO3CR\Search\ViewHelpers\Widget\Controller\PaginateController->.*Action())'
+      matcher: 'method(Neos\ContentRepository\Search\ViewHelpers\Widget\Controller\PaginateController->.*Action())'
 roles:
   'TYPO3.Flow:Everybody':
     privileges:

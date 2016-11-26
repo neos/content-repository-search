@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Exception;
+namespace Neos\ContentRepository\Search\Exception;
 
 /*
  * This file is part of the TYPO3.TYPO3CR.Search package.
@@ -16,6 +16,6 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * An Indexing Exception
  */
-class IndexingException extends \TYPO3\TYPO3CR\Search\Exception
+class IndexingException extends \Neos\ContentRepository\Search\Exception
 {
 }

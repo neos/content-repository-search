@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Eel;
+namespace Neos\ContentRepository\Search\Eel;
 
 /*
  * This file is part of the TYPO3.TYPO3CR.Search package.
@@ -15,7 +15,7 @@ use TYPO3\Eel\ProtectedContextAwareInterface;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Object\ObjectManager;
 use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
+use Neos\ContentRepository\Search\Search\QueryBuilderInterface;
 
 /**
  *

@@ -1,11 +1,11 @@
-'TYPO3.TYPO3CR.Search.Test:BaseType':
+'Neos.ContentRepository.Search.Test:BaseType':
   superTypes: []
 
-'TYPO3.TYPO3CR.Search.Test:Type1':
-  superTypes: [ 'TYPO3.TYPO3CR.Search.Test:BaseType' ]
+'Neos.ContentRepository.Search.Test:Type1':
+  superTypes: [ 'Neos.ContentRepository.Search.Test:BaseType' ]
 
-'TYPO3.TYPO3CR.Search.Test:Type2':
+'Neos.ContentRepository.Search.Test:Type2':
   superTypes: []
 
-'TYPO3.TYPO3CR.Search.Test:Type3':
-  superTypes: [ 'TYPO3.TYPO3CR.Search.Test:Type1', 'TYPO3.TYPO3CR.Search.Test:Type2' ]
+'Neos.ContentRepository.Search.Test:Type3':
+  superTypes: [ 'Neos.ContentRepository.Search.Test:Type1', 'Neos.ContentRepository.Search.Test:Type2' ]

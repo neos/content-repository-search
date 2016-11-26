@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Indexer;
+namespace Neos\ContentRepository\Search\Indexer;
 
 /*
  * This file is part of the TYPO3.TYPO3CR.Search package.
@@ -46,7 +46,7 @@ class NodeIndexingManager
 
     /**
      * @Flow\Inject
-     * @var \TYPO3\TYPO3CR\Search\Indexer\NodeIndexerInterface
+     * @var \Neos\ContentRepository\Search\Indexer\NodeIndexerInterface
      */
     protected $nodeIndexer;
 
