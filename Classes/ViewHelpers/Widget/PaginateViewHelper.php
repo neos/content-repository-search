@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\ViewHelpers\Widget;
+namespace Neos\ContentRepository\Search\ViewHelpers\Widget;
 
 /*
- * This file is part of the TYPO3.TYPO3CR.Search package.
+ * This file is part of the Neos.ContentRepository.Search package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -11,9 +11,9 @@ namespace TYPO3\TYPO3CR\Search\ViewHelpers\Widget;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Fluid\Core\Widget\AbstractWidgetViewHelper;
-use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
+use Neos\Flow\Annotations as Flow;
+use Neos\FluidAdaptor\Core\Widget\AbstractWidgetViewHelper;
+use Neos\ContentRepository\Search\Search\QueryBuilderInterface;
 
 /**
  * This ViewHelper renders a Pagination of search results.
@@ -24,7 +24,7 @@ class PaginateViewHelper extends AbstractWidgetViewHelper
 {
     /**
      * @Flow\Inject
-     * @var \TYPO3\TYPO3CR\Search\ViewHelpers\Widget\Controller\PaginateController
+     * @var \Neos\ContentRepository\Search\ViewHelpers\Widget\Controller\PaginateController
      */
     protected $controller;
 

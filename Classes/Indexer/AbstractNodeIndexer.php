@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Indexer;
+namespace Neos\ContentRepository\Search\Indexer;
 
 /*
- * This file is part of the TYPO3.TYPO3CR.Search package.
+ * This file is part of the Neos.ContentRepository.Search package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -11,12 +11,12 @@ namespace TYPO3\TYPO3CR\Search\Indexer;
  * source code.
  */
 
-use TYPO3\Eel\Utility as EelUtility;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Configuration\ConfigurationManager;
-use TYPO3\Flow\Object\ObjectManagerInterface;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\Search\Exception\IndexingException;
+use Neos\Eel\Utility as EelUtility;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\ObjectManagement\ObjectManagerInterface;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Search\Exception\IndexingException;
 
 /**
  *
@@ -26,7 +26,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
 {
     /**
      * @Flow\Inject(lazy=FALSE)
-     * @var \TYPO3\Eel\CompilingEvaluator
+     * @var \Neos\Eel\CompilingEvaluator
      */
     protected $eelEvaluator;
 
@@ -56,7 +56,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
     public function initializeObject($cause)
     {
         if ($cause === ObjectManagerInterface::INITIALIZATIONCAUSE_CREATED) {
-            $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.TYPO3CR.Search');
+            $this->settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.ContentRepository.Search');
         }
     }
 
@@ -68,7 +68,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @param string $propertyName
      * @param mixed $value
      * @return mixed The result of the evaluated Eel expression
-     * @throws \TYPO3\Eel\Exception
+     * @throws \Neos\Eel\Exception
      */
     protected function evaluateEelExpression($expression, NodeInterface $node, $propertyName, $value)
     {

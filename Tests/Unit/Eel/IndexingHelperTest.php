@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Tests\Unit\Eel;
+namespace Neos\ContentRepository\Search\Tests\Unit\Eel;
 
 /*                                                                              *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search".        *
+ * This script belongs to the TYPO3 Flow package "Neos.ContentRepository.Search".        *
  *                                                                              *
  * It is free software; you can redistribute it and/or modify it under          *
  * the terms of the GNU General Public License, either version 3                *
@@ -11,12 +11,12 @@ namespace TYPO3\TYPO3CR\Search\Tests\Unit\Eel;
  * The TYPO3 project - inspiring people to share!                               *
  *                                                                              */
 
-use TYPO3\TYPO3CR\Search\Eel\IndexingHelper;
+use Neos\ContentRepository\Search\Eel\IndexingHelper;
 
 /**
  * Testcase for IndexingHelper
  */
-class IndexingHelperTest extends \TYPO3\Flow\Tests\UnitTestCase
+class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
 {
     /**
      * @var IndexingHelper

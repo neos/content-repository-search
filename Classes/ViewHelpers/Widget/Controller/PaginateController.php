@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\ViewHelpers\Widget\Controller;
+namespace Neos\ContentRepository\Search\ViewHelpers\Widget\Controller;
 
 /*
- * This file is part of the TYPO3.TYPO3CR.Search package.
+ * This file is part of the Neos.ContentRepository.Search package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -11,8 +11,8 @@ namespace TYPO3\TYPO3CR\Search\ViewHelpers\Widget\Controller;
  * source code.
  */
 
-use TYPO3\Flow\Utility\Arrays;
-use TYPO3\Fluid\Core\Widget\AbstractWidgetController;
+use Neos\Utility\Arrays;
+use Neos\FluidAdaptor\Core\Widget\AbstractWidgetController;
 
 /**
  * Controller for the paginate widget
@@ -20,7 +20,7 @@ use TYPO3\Fluid\Core\Widget\AbstractWidgetController;
 class PaginateController extends AbstractWidgetController
 {
     /**
-     * @var \TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface
+     * @var \Neos\ContentRepository\Search\Search\QueryBuilderInterface
      */
     protected $query;
 

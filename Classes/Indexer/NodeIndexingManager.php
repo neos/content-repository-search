@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Indexer;
+namespace Neos\ContentRepository\Search\Indexer;
 
 /*
- * This file is part of the TYPO3.TYPO3CR.Search package.
+ * This file is part of the Neos.ContentRepository.Search package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -11,9 +11,9 @@ namespace TYPO3\TYPO3CR\Search\Indexer;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\Domain\Model\Workspace;
+use Neos\Flow\Annotations as Flow;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Domain\Model\Workspace;
 
 /**
  * Indexer for Content Repository Nodes. Manages an indexing queue to allow for deferred indexing.
@@ -46,7 +46,7 @@ class NodeIndexingManager
 
     /**
      * @Flow\Inject
-     * @var \TYPO3\TYPO3CR\Search\Indexer\NodeIndexerInterface
+     * @var \Neos\ContentRepository\Search\Indexer\NodeIndexerInterface
      */
     protected $nodeIndexer;
 

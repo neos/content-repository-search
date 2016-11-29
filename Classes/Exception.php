@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Exception;
+namespace Neos\ContentRepository\Search;
 
 /*
- * This file is part of the TYPO3.TYPO3CR.Search package.
+ * This file is part of the Neos.ContentRepository.Search package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -11,11 +11,9 @@ namespace TYPO3\TYPO3CR\Search\Exception;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-
 /**
- * An Indexing Exception
+ * A basic Search Exception
  */
-class IndexingException extends \TYPO3\TYPO3CR\Search\Exception
+class Exception extends \Neos\Flow\Exception
 {
 }

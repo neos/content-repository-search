@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Search;
+namespace Neos\ContentRepository\Search\Search;
 
 /*
- * This file is part of the TYPO3.TYPO3CR.Search package.
+ * This file is part of the Neos.ContentRepository.Search package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -11,8 +11,8 @@ namespace TYPO3\TYPO3CR\Search\Search;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
+use Neos\Flow\Annotations as Flow;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
 
 /**
  * Query Builder Interface for Content Repository searches
@@ -72,7 +72,7 @@ interface QueryBuilderInterface
     /**
      * Execute the query and return the list of nodes as result
      *
-     * @return \Traversable<\TYPO3\TYPO3CR\Domain\Model\NodeInterface>
+     * @return \Traversable<\Neos\ContentRepository\Domain\Model\NodeInterface>
      */
     public function execute();
 

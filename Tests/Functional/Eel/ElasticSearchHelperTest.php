@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Tests\Functional\Eel;
+namespace Neos\ContentRepository\Search\Tests\Functional\Eel;
 
 /*                                                                              *
- * This script belongs to the TYPO3 Flow package "TYPO3.TYPO3CR.Search".        *
+ * This script belongs to the TYPO3 Flow package "Neos.ContentRepository.Search".        *
  *                                                                              *
  * It is free software; you can redistribute it and/or modify it under          *
  * the terms of the GNU General Public License, either version 3                *
@@ -11,13 +11,13 @@ namespace TYPO3\TYPO3CR\Search\Tests\Functional\Eel;
  * The TYPO3 project - inspiring people to share!                               *
  *                                                                              */
 
-use TYPO3\TYPO3CR\Domain\Service\NodeTypeManager;
-use TYPO3\TYPO3CR\Search\Eel\IndexingHelper;
+use Neos\ContentRepository\Domain\Service\NodeTypeManager;
+use Neos\ContentRepository\Search\Eel\IndexingHelper;
 
 /**
  * Functional Testcase for ElasticSearchHelper
  */
-class ElasticSearchHelperTest extends \TYPO3\Flow\Tests\FunctionalTestCase
+class ElasticSearchHelperTest extends \Neos\Flow\Tests\FunctionalTestCase
 {
     /**
      * @var IndexingHelper
@@ -36,14 +36,14 @@ class ElasticSearchHelperTest extends \TYPO3\Flow\Tests\FunctionalTestCase
     public function extractNodeTypesAndSupertypesWorks()
     {
         /* @var $nodeTypeManager NodeTypeManager */
-        $nodeTypeManager = $this->objectManager->get('TYPO3\TYPO3CR\Domain\Service\NodeTypeManager');
-        $nodeType = $nodeTypeManager->getNodeType('TYPO3.TYPO3CR.Search.Test:Type3');
+        $nodeTypeManager = $this->objectManager->get('Neos\ContentRepository\Domain\Service\NodeTypeManager');
+        $nodeType = $nodeTypeManager->getNodeType('Neos.ContentRepository.Search.Test:Type3');
 
         $expected = array(
-            'TYPO3.TYPO3CR.Search.Test:Type3',
-            'TYPO3.TYPO3CR.Search.Test:Type1',
-            'TYPO3.TYPO3CR.Search.Test:BaseType',
-            'TYPO3.TYPO3CR.Search.Test:Type2'
+            'Neos.ContentRepository.Search.Test:Type3',
+            'Neos.ContentRepository.Search.Test:Type1',
+            'Neos.ContentRepository.Search.Test:BaseType',
+            'Neos.ContentRepository.Search.Test:Type2'
         );
 
         $actual = $this->helper->extractNodeTypeNamesAndSupertypes($nodeType);

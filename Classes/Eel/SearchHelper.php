@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\TYPO3CR\Search\Eel;
+namespace Neos\ContentRepository\Search\Eel;
 
 /*
- * This file is part of the TYPO3.TYPO3CR.Search package.
+ * This file is part of the Neos.ContentRepository.Search package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -11,11 +11,11 @@ namespace TYPO3\TYPO3CR\Search\Eel;
  * source code.
  */
 
-use TYPO3\Eel\ProtectedContextAwareInterface;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Object\ObjectManager;
-use TYPO3\TYPO3CR\Domain\Model\NodeInterface;
-use TYPO3\TYPO3CR\Search\Search\QueryBuilderInterface;
+use Neos\Eel\ProtectedContextAwareInterface;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\ObjectManagement\ObjectManager;
+use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Search\Search\QueryBuilderInterface;
 
 /**
  *
