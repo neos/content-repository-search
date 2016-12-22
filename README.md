@@ -1,6 +1,6 @@
 # Neos.ContentRepository.Search
 
-A TYPO3CR search common package used to implement concrete indexing and search functionality.
+A Neos Content Repository search common package used to implement concrete indexing and search functionality.
 
 ## Related packages
 
@@ -10,17 +10,17 @@ Some of the related packages are:
 
 To use Elasticsearch for indexing and searching.
 
-### [Flowpack.SimpleSearch.ContentRepositoryAdaptor](https://github.com/kitsunet/Flowpack.SimpleSearch.ContentRepositoryAdaptor)
+### [Flowpack.SimpleSearch.ContentRepositoryAdaptor](https://github.com/Flowpack/Flowpack.SimpleSearch.ContentRepositoryAdaptor.git)
 
 Uses a SQLite database for indexing and search and thus can be used without additional dependencies.
 
-### [Flowpack.SearchPlugin](https://github.com/skurfuerst/Flowpack.SearchPlugin)
+### [Flowpack.SearchPlugin](https://github.com/Flowpack/Flowpack.SearchPlugin.git)
 
-A plugin to offer search functionality to users via TypoScript rendering.
+A plugin to offer search functionality to users via Fusion rendering.
 
 ## Inner workings
 
-The NodeIndexingManager listens to signals emitted from TYPO3CR and the PersistenceManager if
+The NodeIndexingManager listens to signals emitted from Neos Content Repository and the PersistenceManager if
 `realtimeIndexing.enabled` is `true` (which it defaults to).
 
 - `nodeAdded`, `nodeUpdated`, `afterNodePublishing` trigger `indexNode()`
