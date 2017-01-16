@@ -64,4 +64,3 @@ class Package extends BasePackage
         }
     }
 }
-
