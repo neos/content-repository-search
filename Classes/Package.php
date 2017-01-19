@@ -37,7 +37,7 @@ class Package extends BasePackage
         $dispatcher = $bootstrap->getSignalSlotDispatcher();
         $package = $this;
         $dispatcher->connect(Sequence::class, 'afterInvokeStep', function (Step $step) use ($package, $bootstrap) {
-            if ($step->getIdentifier() === 'typo3.flow:reflectionservice') {
+            if ($step->getIdentifier() === 'neos.flow:reflectionservice') {
                 $package->registerIndexingSlots($bootstrap);
             }
         });
@@ -64,4 +64,3 @@ class Package extends BasePackage
         }
     }
 }
-
