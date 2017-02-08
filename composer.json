@@ -3,8 +3,8 @@
     "type": "neos-package",
     "description": "Common code and interface for a Neos CR search implementation",
     "require": {
-        "neos/flow": "^4.0 || dev-master",
-        "neos/content-repository": "^3.0 || dev-master"
+        "neos/flow": "^4.0",
+        "neos/content-repository": "^3.0"
     },
     "replace": {
         "typo3/typo3cr-search": "self.version"
