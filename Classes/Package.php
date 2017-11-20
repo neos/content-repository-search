@@ -18,6 +18,7 @@ use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Package\Package as BasePackage;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\ContentRepository\Domain\Model\Node;
+use Neos\ContentRepository\Domain\Service\PublishingService;
 use Neos\ContentRepository\Domain\Model\Workspace;
 
 /**
@@ -57,6 +58,8 @@ class Package extends BasePackage
             $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeAdded', Indexer\NodeIndexingManager::class, 'indexNode', false);
             $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeUpdated', Indexer\NodeIndexingManager::class, 'indexNode', false);
             $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeRemoved', Indexer\NodeIndexingManager::class, 'removeNode', false);
+            // discard needs to be handled separately as it does not emit `nodeRemoved`
+            $bootstrap->getSignalSlotDispatcher()->connect(PublishingService::class, 'nodeDiscarded', Indexer\NodeIndexingManager::class, 'removeNode', false);
             // all publishing calls (Workspace, PublishingService) eventually trigger this - and publishing is triggered in various ways
             $bootstrap->getSignalSlotDispatcher()->connect(Workspace::class, 'afterNodePublishing', Indexer\NodeIndexingManager::class, 'indexNode', false);
             // make sure we always flush at the end, regardless of indexingBatchSize
