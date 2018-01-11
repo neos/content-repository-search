@@ -52,6 +52,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * Called by the Flow object framework after creating the object and resolving all dependencies.
      *
      * @param integer $cause Creation cause
+     * @throws \Neos\Flow\Configuration\Exception\InvalidConfigurationTypeException
      */
     public function initializeObject($cause)
     {
@@ -91,6 +92,8 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @param string $fulltextExtractionExpression
      * @param array $fulltextIndexOfNode
      * @throws IndexingException
+     * @throws \Neos\ContentRepository\Exception\NodeException
+     * @throws \Neos\Eel\Exception
      */
     protected function extractFulltext(NodeInterface $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode)
     {
@@ -118,6 +121,9 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @param array $fulltextData
      * @param \Closure $nonIndexedPropertyErrorHandler
      * @return array
+     * @throws IndexingException
+     * @throws \Neos\ContentRepository\Exception\NodeException
+     * @throws \Neos\Eel\Exception
      */
     protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null)
     {
