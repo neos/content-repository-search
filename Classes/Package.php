@@ -54,13 +54,13 @@ class Package extends BasePackage
         $settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->getPackageKey());
         if (isset($settings['realtimeIndexing']['enabled']) && $settings['realtimeIndexing']['enabled'] === true) {
             // handle changes to nodes
-            $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeAdded', Indexer\NodeIndexingManager::class, 'indexNode');
-            $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeUpdated', Indexer\NodeIndexingManager::class, 'indexNode');
-            $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeRemoved', Indexer\NodeIndexingManager::class, 'removeNode');
+            $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeAdded', Indexer\NodeIndexingManager::class, 'indexNode', false);
+            $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeUpdated', Indexer\NodeIndexingManager::class, 'indexNode', false);
+            $bootstrap->getSignalSlotDispatcher()->connect(Node::class, 'nodeRemoved', Indexer\NodeIndexingManager::class, 'removeNode', false);
             // all publishing calls (Workspace, PublishingService) eventually trigger this - and publishing is triggered in various ways
             $bootstrap->getSignalSlotDispatcher()->connect(Workspace::class, 'afterNodePublishing', Indexer\NodeIndexingManager::class, 'indexNode', false);
             // make sure we always flush at the end, regardless of indexingBatchSize
-            $bootstrap->getSignalSlotDispatcher()->connect(PersistenceManager::class, 'allObjectsPersisted', Indexer\NodeIndexingManager::class, 'flushQueues');
+            $bootstrap->getSignalSlotDispatcher()->connect(PersistenceManager::class, 'allObjectsPersisted', Indexer\NodeIndexingManager::class, 'flushQueues', false);
         }
     }
 }
