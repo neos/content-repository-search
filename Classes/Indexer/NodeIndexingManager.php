@@ -38,6 +38,11 @@ class NodeIndexingManager
     protected $targetWorkspaceNamesForNodesToBeIndexed = [];
 
     /**
+     * @var array
+     */
+    protected $targetWorkspaceNamesForNodesToBeRemoved = [];
+
+    /**
      * the indexing batch size (from the settings)
      *
      * @var integer
@@ -87,12 +92,14 @@ class NodeIndexingManager
      * Schedule a node for removal of the index
      *
      * @param NodeInterface $node
+     * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function removeNode(NodeInterface $node)
+    public function removeNode(NodeInterface $node, Workspace $targetWorkspace = null)
     {
         $this->nodesToBeIndexed->detach($node);
         $this->nodesToBeRemoved->attach($node);
+        $this->targetWorkspaceNamesForNodesToBeRemoved[$node->getContextPath()] = $targetWorkspace instanceof Workspace ? $targetWorkspace->getName() : null;
 
         $this->flushQueuesIfNeeded();
     }
@@ -129,13 +136,18 @@ class NodeIndexingManager
 
             /** @var NodeInterface $nodeToBeRemoved */
             foreach ($this->nodesToBeRemoved as $nodeToBeRemoved) {
-                $this->nodeIndexer->removeNode($nodeToBeRemoved);
+                if (isset($this->targetWorkspaceNamesForNodesToBeRemoved[$nodeToBeRemoved->getContextPath()])) {
+                    $this->nodeIndexer->removeNode($nodeToBeRemoved, $this->targetWorkspaceNamesForNodesToBeRemoved[$nodeToBeRemoved->getContextPath()]);
+                } else {
+                    $this->nodeIndexer->removeNode($nodeToBeRemoved);
+                }
             }
 
             $this->nodeIndexer->flush();
             $this->nodesToBeIndexed = new \SplObjectStorage();
             $this->nodesToBeRemoved = new \SplObjectStorage();
             $this->targetWorkspaceNamesForNodesToBeIndexed = [];
+            $this->targetWorkspaceNamesForNodesToBeRemoved = [];
         };
 
         if ($this->nodeIndexer instanceof BulkNodeIndexerInterface) {
