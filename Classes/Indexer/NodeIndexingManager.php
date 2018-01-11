@@ -81,11 +81,16 @@ class NodeIndexingManager
      */
     public function indexNode(NodeInterface $node, Workspace $targetWorkspace = null)
     {
-        $this->nodesToBeRemoved->detach($node);
-        $this->nodesToBeIndexed->attach($node);
-        $this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof Workspace ? $targetWorkspace->getName() : null;
+        // if this is triggered via afterNodePublishing, it could be a deletion, check and handle
+        if ($node->isRemoved() && $targetWorkspace !== null && $targetWorkspace->getBaseWorkspace() === null) {
+            $this->removeNode($node, $targetWorkspace);
+        } else {
+            $this->nodesToBeRemoved->detach($node);
+            $this->nodesToBeIndexed->attach($node);
+            $this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof Workspace ? $targetWorkspace->getName() : null;
 
-        $this->flushQueuesIfNeeded();
+            $this->flushQueuesIfNeeded();
+        }
     }
 
     /**
