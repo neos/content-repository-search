@@ -71,10 +71,10 @@ class NodeIndexingManager
      * Schedule a node for indexing
      *
      * @param NodeInterface $node
-     * @param mixed $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
+     * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function indexNode(NodeInterface $node, $targetWorkspace = null)
+    public function indexNode(NodeInterface $node, Workspace $targetWorkspace = null)
     {
         $this->nodesToBeRemoved->detach($node);
         $this->nodesToBeIndexed->attach($node);
