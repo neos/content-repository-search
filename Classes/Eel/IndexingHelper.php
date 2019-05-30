@@ -203,7 +203,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
     public function indexAsset($value)
     {
         if ($value === null) {
-            return null;
+            return [];
         } elseif (is_array($value)) {
             $result = [];
             foreach ($value as $element) {
