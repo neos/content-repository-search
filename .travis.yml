@@ -19,9 +19,9 @@ before_install:
   - cd ..
   - git clone https://github.com/neos/neos-development-distribution.git -b master
   - cd neos-development-distribution
-  - composer require neos/content-repository-search dev-master
+  - composer require --no-update --no-interaction neos/content-repository-search dev-master
 install:
-  - composer install
+  - COMPOSER_MEMORY_LIMIT=-1 composer install
   - cd ..
   - rm -rf neos-development-distribution/Packages/Application/Neos.ContentRepository.Search
   - mv typo3cr-search neos-development-distribution/Packages/Application/Neos.ContentRepository.Search
