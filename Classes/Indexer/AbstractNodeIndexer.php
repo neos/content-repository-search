@@ -14,6 +14,7 @@ namespace Neos\ContentRepository\Search\Indexer;
 use Neos\Eel\Utility as EelUtility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Configuration\Exception\InvalidConfigurationTypeException;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Search\Exception\IndexingException;
@@ -52,6 +53,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * Called by the Flow object framework after creating the object and resolving all dependencies.
      *
      * @param integer $cause Creation cause
+     * @throws InvalidConfigurationTypeException
      */
     public function initializeObject($cause)
     {
@@ -91,6 +93,8 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @param string $fulltextExtractionExpression
      * @param array $fulltextIndexOfNode
      * @throws IndexingException
+     * @throws \Neos\ContentRepository\Exception\NodeException
+     * @throws \Neos\Eel\Exception
      */
     protected function extractFulltext(NodeInterface $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode)
     {
@@ -118,6 +122,9 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @param array $fulltextData
      * @param \Closure $nonIndexedPropertyErrorHandler
      * @return array
+     * @throws IndexingException
+     * @throws \Neos\ContentRepository\Exception\NodeException
+     * @throws \Neos\Eel\Exception
      */
     protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null)
     {
