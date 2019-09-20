@@ -24,7 +24,7 @@ class ElasticSearchHelperTest extends \Neos\Flow\Tests\FunctionalTestCase
      */
     protected $helper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->helper = new IndexingHelper();
         parent::setUp();
@@ -47,6 +47,6 @@ class ElasticSearchHelperTest extends \Neos\Flow\Tests\FunctionalTestCase
         );
 
         $actual = $this->helper->extractNodeTypeNamesAndSupertypes($nodeType);
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

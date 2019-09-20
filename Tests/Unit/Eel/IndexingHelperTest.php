@@ -23,7 +23,7 @@ class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
      */
     protected $helper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->helper = new IndexingHelper();
     }
@@ -41,7 +41,7 @@ class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
             'foo/bar/baz/testing',
         );
 
-        $this->assertSame($expected, $this->helper->buildAllPathPrefixes($input));
+        self::assertSame($expected, $this->helper->buildAllPathPrefixes($input));
     }
 
     /**
@@ -58,7 +58,7 @@ class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
             '/foo/bar/baz/testing',
         );
 
-        $this->assertSame($expected, $this->helper->buildAllPathPrefixes($input));
+        self::assertSame($expected, $this->helper->buildAllPathPrefixes($input));
     }
 
     /**
@@ -71,7 +71,7 @@ class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
             '/'
         );
 
-        $this->assertSame($expected, $this->helper->buildAllPathPrefixes($input));
+        self::assertSame($expected, $this->helper->buildAllPathPrefixes($input));
     }
 
     /**
@@ -85,6 +85,6 @@ class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
             'h2' => ' How do you feel? I Feel so good '
         );
 
-        $this->assertSame($expected, $this->helper->extractHtmlTags($input));
+        self::assertSame($expected, $this->helper->extractHtmlTags($input));
     }
 }
