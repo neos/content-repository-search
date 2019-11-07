@@ -11,9 +11,14 @@ namespace Neos\ContentRepository\Search\ViewHelpers\Widget;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
-use Neos\FluidAdaptor\Core\Widget\AbstractWidgetViewHelper;
 use Neos\ContentRepository\Search\Search\QueryBuilderInterface;
+use Neos\ContentRepository\Search\ViewHelpers\Widget\Controller\PaginateController;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Mvc\Exception\InfiniteLoopException;
+use Neos\FluidAdaptor\Core\ViewHelper\Exception as ViewHelperException;
+use Neos\FluidAdaptor\Core\Widget\AbstractWidgetViewHelper;
+use Neos\FluidAdaptor\Core\Widget\Exception\InvalidControllerException;
+use Neos\FluidAdaptor\Core\Widget\Exception\MissingControllerException;
 
 /**
  * This ViewHelper renders a Pagination of search results.
@@ -24,21 +29,41 @@ class PaginateViewHelper extends AbstractWidgetViewHelper
 {
     /**
      * @Flow\Inject
-     * @var \Neos\ContentRepository\Search\ViewHelpers\Widget\Controller\PaginateController
+     * @var PaginateController
      */
     protected $controller;
 
     /**
+     * Initialize the arguments.
+     *
+     * @return void
+     * @throws ViewHelperException
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+
+        $this->registerArgument('query', QueryBuilderInterface::class, 'Query', true);
+        $this->registerArgument('as', 'string', 'as', true);
+        $this->registerArgument(
+            'configuration',
+            'array',
+            'Widget configuration',
+            false,
+            ['insertAbove' => false, 'insertBelow' => true, 'itemsPerPage' => 10, 'maximumNumberOfLinks' => 99]
+        );
+    }
+
+    /**
      * Render this view helper
      *
-     * @param QueryBuilderInterface $query
-     * @param string $as
-     * @param array $configuration
      * @return string
+     * @throws InfiniteLoopException
+     * @throws InvalidControllerException
+     * @throws MissingControllerException
      */
-    public function render(QueryBuilderInterface $query, $as, array $configuration = array('itemsPerPage' => 10, 'insertAbove' => false, 'insertBelow' => true, 'maximumNumberOfLinks' => 99))
+    public function render() : string
     {
-        $response = $this->initiateSubRequest();
-        return $response->getContent();
+        return $this->initiateSubRequest();
     }
 }
