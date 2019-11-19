@@ -73,7 +73,7 @@ class PaginateController extends AbstractWidgetController
     /**
      * @return void
      */
-    protected function initializeAction() : void
+    protected function initializeAction()
     {
         $this->query = $this->widgetConfiguration['query'];
         $this->configuration = Arrays::arrayMergeRecursiveOverrule(
@@ -90,7 +90,7 @@ class PaginateController extends AbstractWidgetController
      * @param int $currentPage
      * @return void
      */
-    public function indexAction($currentPage = 1) : void
+    public function indexAction($currentPage = 1)
     {
         $this->currentPage = (int)$currentPage;
         if ($this->currentPage < 1) {
