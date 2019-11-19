@@ -73,7 +73,7 @@ class PaginateController extends AbstractWidgetController
     /**
      * @return void
      */
-    protected function initializeAction()
+    protected function initializeAction(): void
     {
         $this->query = $this->widgetConfiguration['query'];
         $this->configuration = Arrays::arrayMergeRecursiveOverrule(
@@ -90,7 +90,7 @@ class PaginateController extends AbstractWidgetController
      * @param int $currentPage
      * @return void
      */
-    public function indexAction($currentPage = 1)
+    public function indexAction($currentPage = 1): void
     {
         $this->currentPage = (int)$currentPage;
         if ($this->currentPage < 1) {
@@ -117,7 +117,7 @@ class PaginateController extends AbstractWidgetController
      *
      * @return void
      */
-    protected function calculateDisplayRange()
+    protected function calculateDisplayRange(): void
     {
         $maximumNumberOfLinks = $this->maximumNumberOfLinks;
         if ($maximumNumberOfLinks > $this->numberOfPages) {
@@ -141,7 +141,7 @@ class PaginateController extends AbstractWidgetController
      *
      * @return array
      */
-    protected function buildPagination()
+    protected function buildPagination(): array
     {
         $this->calculateDisplayRange();
         $pages = [];
