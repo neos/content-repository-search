@@ -126,7 +126,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @throws \Neos\ContentRepository\Exception\NodeException
      * @throws \Neos\Eel\Exception
      */
-    protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null)
+    protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null): array
     {
         $nodePropertiesToBeStoredInIndex = [];
         $nodeType = $node->getNodeType();
@@ -134,12 +134,11 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
 
         foreach ($nodeType->getProperties() as $propertyName => $propertyConfiguration) {
             if (isset($propertyConfiguration['search']['indexing'])) {
-                if ($propertyConfiguration['search']['indexing'] !== '') {
+                if (!empty($propertyConfiguration['search']['indexing'])) {
                     $valueToStore = $this->evaluateEelExpression($propertyConfiguration['search']['indexing'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : null));
-
                     $nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
                 }
-            } elseif (isset($propertyConfiguration['type']) && isset($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'])) {
+            } elseif (isset($propertyConfiguration['type'], $this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'])) {
                 if ($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'] !== '') {
                     $valueToStore = $this->evaluateEelExpression($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : null));
                     $nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
@@ -163,9 +162,9 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * Whether the node has fulltext indexing enabled.
      *
      * @param NodeInterface $node
-     * @return boolean
+     * @return bool
      */
-    protected function isFulltextEnabled(NodeInterface $node)
+    protected function isFulltextEnabled(NodeInterface $node): bool
     {
         if ($node->getNodeType()->hasConfiguration('search')) {
             $searchSettingsForNode = $node->getNodeType()->getConfiguration('search');
