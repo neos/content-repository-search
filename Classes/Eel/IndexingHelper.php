@@ -193,10 +193,10 @@ class IndexingHelper implements ProtectedContextAwareInterface
      * @param string $string
      * @return array
      */
-    public function extractInto(string $bucketName, string $string): array
+    public function extractInto(string $bucketName, $string): array
     {
         return [
-            $bucketName => $string
+            $bucketName => (string)$string
         ];
     }
 
