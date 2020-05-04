@@ -11,7 +11,6 @@ namespace Neos\ContentRepository\Search\Eel;
  * source code.
  */
 
-
 use Neos\ContentRepository\Search\AssetExtraction\AssetExtractorInterface;
 use Neos\Flow\Annotations as Flow;
 use Neos\Eel\ProtectedContextAwareInterface;
@@ -50,9 +49,11 @@ class IndexingHelper implements ProtectedContextAwareInterface
      */
     public function buildAllPathPrefixes($path)
     {
-        if (strlen($path) === 0) {
+        if ($path === '') {
             return [];
-        } elseif ($path === '/') {
+        }
+
+        if ($path === '/') {
             return ['/'];
         }
 

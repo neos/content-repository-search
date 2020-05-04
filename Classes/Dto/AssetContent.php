@@ -15,39 +15,46 @@ namespace  Neos\ContentRepository\Search\Dto;
 
 class AssetContent
 {
-
     /**
      * @var string
      */
     protected $content;
+
     /**
      * @var string
      */
     protected $title;
+
     /**
      * @var string
      */
     protected $name;
+
     /**
      * @var string
      */
     protected $author;
+
     /**
      * @var string
      */
     protected $keywords;
+
     /**
      * @var string
      */
     protected $date;
+    
     /**
      * @var string
      */
     protected $contentType;
+
     /**
      * @var int
      */
     protected $contentLength;
+
     /**
      * @var string
      */
