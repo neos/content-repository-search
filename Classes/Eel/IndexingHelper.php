@@ -11,8 +11,10 @@ namespace Neos\ContentRepository\Search\Eel;
  * source code.
  */
 
-use Neos\Eel\ProtectedContextAwareInterface;
+
+use Neos\ContentRepository\Search\AssetExtraction\AssetExtractorInterface;
 use Neos\Flow\Annotations as Flow;
+use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\ContentRepository\Domain\Model\NodeType;
 use Neos\ContentRepository\Search\Exception\IndexingException;
@@ -22,6 +24,12 @@ use Neos\ContentRepository\Search\Exception\IndexingException;
  */
 class IndexingHelper implements ProtectedContextAwareInterface
 {
+    /**
+     * @Flow\Inject
+     * @var AssetExtractorInterface
+     */
+    protected $assetExtractor;
+
     /**
      * Build all path prefixes. From an input such as:
      *
@@ -180,11 +188,11 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      *
      *
-     * @param $bucketName
-     * @param $string
+     * @param string $bucketName
+     * @param string $string
      * @return array
      */
-    public function extractInto($bucketName, $string)
+    public function extractInto(string $bucketName, string $string): array
     {
         return [
             $bucketName => $string
@@ -192,31 +200,29 @@ class IndexingHelper implements ProtectedContextAwareInterface
     }
 
     /**
-     * Index an asset list or a single asset (by base64-encoding-it);
-     * in the same manner as expected by the ElasticSearch "attachment"
-     * core plugin.
+     * Extract the asset content and meta data
      *
-     * @param $value
+     * @param AssetInterface|AssetInterface[]|null $value
+     * @param string $field
      * @return array|null|string
      * @throws IndexingException
      */
-    public function indexAsset($value)
+    public function extractAssetContent($value, string $field = 'content')
     {
         if ($value === null) {
             return null;
         } elseif (is_array($value)) {
             $result = [];
             foreach ($value as $element) {
-                $result[] = $this->indexAsset($element);
+                $result[] = $this->extractAssetContent($element, $field);
             }
             return $result;
         } elseif ($value instanceof AssetInterface) {
-            $stream = $value->getResource()->getStream();
-            stream_filter_append($stream, 'convert.base64-encode');
-            $result = stream_get_contents($stream);
-            return $result;
+            $assetContent = $this->assetExtractor->extract($value);
+            $getter = 'get' . lcfirst($field);
+            return $assetContent->$getter();
         } else {
-            throw new IndexingException('Value of type ' . gettype($value) . ' - ' . get_class($value) . ' could not be converted to asset binary.', 1437555909);
+            throw new IndexingException('Value of type ' . gettype($value) . ' - ' . get_class($value) . ' could not be extracted.', 1437555909);
         }
     }
 
