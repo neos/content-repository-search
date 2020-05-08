@@ -23,6 +23,7 @@ Neos:
         reference:
           indexing: '${value.identifier}'
       defaultContext:
+        q: Neos\Eel\FlowQuery\FlowQuery::q
         String: Neos\Eel\Helper\StringHelper
         Array: Neos\Eel\Helper\ArrayHelper
         Date: Neos\Eel\Helper\DateHelper
