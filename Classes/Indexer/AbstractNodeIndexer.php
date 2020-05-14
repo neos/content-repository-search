@@ -1,4 +1,5 @@
 <?php
+
 namespace Neos\ContentRepository\Search\Indexer;
 
 /*
@@ -96,7 +97,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @throws \Neos\ContentRepository\Exception\NodeException
      * @throws \Neos\Eel\Exception
      */
-    protected function extractFulltext(NodeInterface $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode)
+    protected function extractFulltext(NodeInterface $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode): void
     {
         if ($fulltextExtractionExpression !== '') {
             $extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : null));
@@ -109,7 +110,11 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
                 if (!isset($fulltextIndexOfNode[$bucket])) {
                     $fulltextIndexOfNode[$bucket] = '';
                 }
-                $fulltextIndexOfNode[$bucket] .= ' ' . $value;
+
+                $value = trim($value);
+                if ($value !== '') {
+                    $fulltextIndexOfNode[$bucket] .= ' ' . $value;
+                }
             }
         }
         // TODO: also allow fulltextExtractor in settings!!
