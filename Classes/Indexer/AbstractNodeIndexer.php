@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Neos\ContentRepository\Search\Indexer;
 
 /*
@@ -96,7 +98,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @throws \Neos\ContentRepository\Exception\NodeException
      * @throws \Neos\Eel\Exception
      */
-    protected function extractFulltext(NodeInterface $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode)
+    protected function extractFulltext(NodeInterface $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode): void
     {
         if ($fulltextExtractionExpression !== '') {
             $extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : null));
@@ -133,7 +135,13 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
         $fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
 
         foreach ($nodeType->getProperties() as $propertyName => $propertyConfiguration) {
-            if (isset($propertyConfiguration['search']['indexing'])) {
+            if (isset($propertyConfiguration['search']) && array_key_exists('indexing', $propertyConfiguration['search'])) {
+
+                // This property is configured to not be index, so do not add a mapping for it
+                if ($propertyConfiguration['search']['indexing'] === false) {
+                    continue;
+                }
+
                 if (!empty($propertyConfiguration['search']['indexing'])) {
                     $valueToStore = $this->evaluateEelExpression($propertyConfiguration['search']['indexing'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : null));
                     $nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
