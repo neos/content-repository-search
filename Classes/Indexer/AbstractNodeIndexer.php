@@ -111,7 +111,11 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
                 if (!isset($fulltextIndexOfNode[$bucket])) {
                     $fulltextIndexOfNode[$bucket] = '';
                 }
-                $fulltextIndexOfNode[$bucket] .= ' ' . $value;
+
+                $value = trim($value);
+                if ($value !== '') {
+                    $fulltextIndexOfNode[$bucket] .= ' ' . $value;
+                }
             }
         }
         // TODO: also allow fulltextExtractor in settings!!
