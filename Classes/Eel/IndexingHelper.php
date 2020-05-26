@@ -14,9 +14,11 @@ namespace Neos\ContentRepository\Search\Eel;
 use Neos\ContentRepository\Search\AssetExtraction\AssetExtractorInterface;
 use Neos\Flow\Annotations as Flow;
 use Neos\Eel\ProtectedContextAwareInterface;
+use Neos\Flow\Log\Utility\LogEnvironment;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\ContentRepository\Domain\Model\NodeType;
 use Neos\ContentRepository\Search\Exception\IndexingException;
+use Psr\Log\LoggerInterface;
 
 /**
  * IndexingHelper
@@ -28,6 +30,12 @@ class IndexingHelper implements ProtectedContextAwareInterface
      * @var AssetExtractorInterface
      */
     protected $assetExtractor;
+
+    /**
+     * @Flow\Inject
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Build all path prefixes. From an input such as:
@@ -210,7 +218,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
      */
     public function extractAssetContent($value, string $field = 'content')
     {
-        if ($value === null) {
+        if (empty($value)) {
             return null;
         } elseif (is_array($value)) {
             $result = [];
@@ -223,7 +231,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
             $getter = 'get' . lcfirst($field);
             return $assetContent->$getter();
         } else {
-            throw new IndexingException('Value of type ' . gettype($value) . ' - ' . get_class($value) . ' could not be extracted.', 1437555909);
+            $this->logger->error('Value of type ' . gettype($value) . ' - ' . get_class($value) . ' could not be extracted.', LogEnvironment::fromMethodName(__METHOD__));
         }
     }
 
