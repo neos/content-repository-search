@@ -27,7 +27,7 @@ interface NodeIndexerInterface
      * @param mixed $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function indexNode(NodeInterface $node, $targetWorkspace = null);
+    public function indexNode(NodeInterface $node, $targetWorkspace = null): void;
 
     /**
      * Schedule a node for removal of the index
@@ -35,12 +35,12 @@ interface NodeIndexerInterface
      * @param NodeInterface $node
      * @return void
      */
-    public function removeNode(NodeInterface $node);
+    public function removeNode(NodeInterface $node): void;
 
     /**
      * Perform all changes to the index queued up. If an implementation directly changes the index this can be no operation.
      *
      * @return void
      */
-    public function flush();
+    public function flush(): void;
 }

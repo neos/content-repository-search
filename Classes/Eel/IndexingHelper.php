@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Neos\ContentRepository\Search\Eel;
 
 /*
@@ -55,7 +57,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
      * @param string $path
      * @return array<string>
      */
-    public function buildAllPathPrefixes($path)
+    public function buildAllPathPrefixes(string $path): array
     {
         if ($path === '') {
             return [];
@@ -67,7 +69,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
 
         $currentPath = '';
         $pathPrefixes = [];
-        if ($path{0} === '/') {
+        if (strpos($path, '/') === 0) {
             $currentPath = '/';
             $pathPrefixes[] = $currentPath;
         }
@@ -87,7 +89,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
      * @param NodeType $nodeType
      * @return array<String>
      */
-    public function extractNodeTypeNamesAndSupertypes(NodeType $nodeType)
+    public function extractNodeTypeNamesAndSupertypes(NodeType $nodeType): array
     {
         $nodeTypeNames = [];
         $this->extractNodeTypeNamesAndSupertypesInternal($nodeType, $nodeTypeNames);
@@ -101,7 +103,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
      * @param array $nodeTypeNames
      * @return void
      */
-    protected function extractNodeTypeNamesAndSupertypesInternal(NodeType $nodeType, array &$nodeTypeNames)
+    protected function extractNodeTypeNamesAndSupertypesInternal(NodeType $nodeType, array &$nodeTypeNames): void
     {
         $nodeTypeNames[$nodeType->getName()] = $nodeType->getName();
         foreach ($nodeType->getDeclaredSuperTypes() as $superType) {
@@ -115,7 +117,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
      * @param array<NodeInterface> $nodes
      * @return array
      */
-    public function convertArrayOfNodesToArrayOfNodeIdentifiers($nodes)
+    public function convertArrayOfNodesToArrayOfNodeIdentifiers($nodes): array
     {
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
             return [];
@@ -135,7 +137,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
      * @param string $propertyName
      * @return array
      */
-    public function convertArrayOfNodesToArrayOfNodeProperty($nodes, $propertyName)
+    public function convertArrayOfNodesToArrayOfNodeProperty($nodes, string $propertyName): array
     {
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
             return [];
@@ -153,7 +155,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
      * @param $string
      * @return array
      */
-    public function extractHtmlTags($string)
+    public function extractHtmlTags($string): array
     {
         // prevents concatenated words when stripping tags afterwards
         $string = str_replace(['<', '>'], [' <', '> '], $string);
@@ -163,7 +165,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
         $parts = [
             'text' => ''
         ];
-        while (strlen($string) > 0) {
+        while ($string !== '') {
             $matches = [];
             if (preg_match('/<(h1|h2|h3|h4|h5|h6)[^>]*>.*?<\/\1>/ui', $string, $matches, PREG_OFFSET_CAPTURE)) {
                 $fullMatch = $matches[0][0];
@@ -195,8 +197,6 @@ class IndexingHelper implements ProtectedContextAwareInterface
     }
 
     /**
-     *
-     *
      * @param string $bucketName
      * @param string $string
      * @return array

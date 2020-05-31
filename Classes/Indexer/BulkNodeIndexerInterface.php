@@ -27,5 +27,5 @@ interface BulkNodeIndexerInterface
      * @param callable $callback
      * @return void
      */
-    public function withBulkProcessing(callable $callback);
+    public function withBulkProcessing(callable $callback): void;
 }

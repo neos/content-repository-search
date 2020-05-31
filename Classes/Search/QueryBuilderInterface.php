@@ -25,7 +25,7 @@ interface QueryBuilderInterface
      * @param string $propertyName the property name to sort by
      * @return QueryBuilderInterface
      */
-    public function sortDesc($propertyName);
+    public function sortDesc(string $propertyName): QueryBuilderInterface;
 
     /**
      * Sort ascending by $propertyName
@@ -33,15 +33,15 @@ interface QueryBuilderInterface
      * @param string $propertyName the property name to sort by
      * @return QueryBuilderInterface
      */
-    public function sortAsc($propertyName);
+    public function sortAsc(string $propertyName): QueryBuilderInterface;
 
     /**
      * output only $limit records
      *
-     * @param integer $limit
+     * @param int $limit
      * @return QueryBuilderInterface
      */
-    public function limit($limit);
+    public function limit($limit): QueryBuilderInterface;
 
     /**
      * output records starting at $from
@@ -50,7 +50,7 @@ interface QueryBuilderInterface
      * @param integer $from
      * @return QueryBuilderInterface
      */
-    public function from($from);
+    public function from($from): QueryBuilderInterface;
 
     /**
      * add an exact-match query for a given property
@@ -59,7 +59,7 @@ interface QueryBuilderInterface
      * @param mixed $propertyValue
      * @return QueryBuilderInterface
      */
-    public function exactMatch($propertyName, $propertyValue);
+    public function exactMatch(string $propertyName, $propertyValue): QueryBuilderInterface;
 
     /**
      * Match the searchword against the fulltext index
@@ -75,14 +75,14 @@ interface QueryBuilderInterface
      *
      * @return \Traversable<\Neos\ContentRepository\Domain\Model\NodeInterface>
      */
-    public function execute();
+    public function execute(): \Traversable;
 
     /**
      * Return the total number of hits for the query.
      *
-     * @return integer
+     * @return int
      */
-    public function count();
+    public function count(): int;
 
     /**
      * Sets the starting point for this query. Search result should only contain nodes that
@@ -91,7 +91,7 @@ interface QueryBuilderInterface
      * @param NodeInterface $contextNode
      * @return QueryBuilderInterface
      */
-    public function query(NodeInterface $contextNode);
+    public function query(NodeInterface $contextNode): QueryBuilderInterface;
 
     /**
      * Filter by node type, taking inheritance into account.
@@ -99,5 +99,5 @@ interface QueryBuilderInterface
      * @param string $nodeType the node type to filter for
      * @return QueryBuilderInterface
      */
-    public function nodeType($nodeType);
+    public function nodeType(string $nodeType): QueryBuilderInterface;
 }

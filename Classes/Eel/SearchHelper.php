@@ -18,7 +18,6 @@ use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Search\Search\QueryBuilderInterface;
 
 /**
- *
  * Eel Helper to start search queries
  */
 class SearchHelper implements ProtectedContextAwareInterface
@@ -35,7 +34,7 @@ class SearchHelper implements ProtectedContextAwareInterface
      * @param NodeInterface $contextNode
      * @return QueryBuilderInterface
      */
-    public function query(NodeInterface $contextNode)
+    public function query(NodeInterface $contextNode): QueryBuilderInterface
     {
         $queryBuilder = $this->objectManager->get(QueryBuilderInterface::class);
 
