@@ -1,5 +1,7 @@
 # Neos.ContentRepository.Search
 
+[![Build Status](https://travis-ci.com/neos/content-repository-search.svg)](https://travis-ci.com/neos/content-repository-search) [![Latest Stable Version](https://poser.pugx.org/neos/content-repository-search/v/stable)](https://packagist.org/packages/neos/content-repository-search) [![Total Downloads](https://poser.pugx.org/neos/content-repository-search/downloads)](https://packagist.org/packages/neos/content-repository-search)
+
 A Neos Content Repository search common package used to implement concrete indexing and search functionality.
 
 ## Related packages
