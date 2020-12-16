@@ -2,11 +2,11 @@ language: php
 matrix:
   fast_finish: true
   include:
-    - php: 7.2
+    - php: 7.4
       env: DB=mysql
       addons:
         mariadb: '10.2'
-    - php: 7.2
+    - php: 7.4
       env: DB=pgsql
       sudo: true
       dist: trusty
@@ -24,7 +24,7 @@ install:
   - COMPOSER_MEMORY_LIMIT=-1 composer install
   - cd ..
   - rm -rf neos-development-distribution/Packages/Application/Neos.ContentRepository.Search
-  - mv typo3cr-search neos-development-distribution/Packages/Application/Neos.ContentRepository.Search
+  - mv content-repository-search neos-development-distribution/Packages/Application/Neos.ContentRepository.Search
   - cd neos-development-distribution
 
 before_script:
