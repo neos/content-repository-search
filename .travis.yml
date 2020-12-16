@@ -16,16 +16,17 @@ cache:
   directories:
     - $HOME/.composer/cache
 before_install:
+  - export NEOS_TARGET_VERSION=7.0
   - cd ..
-  - git clone https://github.com/neos/neos-development-distribution.git -b dev-master
-  - cd neos-development-distribution
-  - composer require --no-update --no-interaction neos/content-repository-search dev-master
+  - git clone https://github.com/neos/neos-base-distribution.git -b ${NEOS_TARGET_VERSION}
+  - cd neos-base-distribution
+  - composer require --no-update --no-interaction neos/content-repository-search:dev-master
 install:
-  - COMPOSER_MEMORY_LIMIT=-1 composer install
+  - composer install --no-interaction
   - cd ..
-  - rm -rf neos-development-distribution/Packages/Application/Neos.ContentRepository.Search
-  - mv content-repository-search neos-development-distribution/Packages/Application/Neos.ContentRepository.Search
-  - cd neos-development-distribution
+  - rm -rf neos-base-distribution/Packages/Application/Neos.ContentRepository.Search
+  - mv content-repository-search neos-base-distribution/Packages/Application/Neos.ContentRepository.Search
+  - cd neos-base-distribution
 
 before_script:
   - phpenv config-rm xdebug.ini
