@@ -3,7 +3,7 @@
     "type": "neos-package",
     "description": "Common code and interface for a Neos CR search implementation",
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.3",
         "neos/flow": "^5.1 || ^6.0 || ^7.0",
         "neos/content-repository": "^4.0 || ^5.0 || ^7.0"
     },
