@@ -38,6 +38,11 @@ class NodeIndexingManager
     protected $targetWorkspaceNamesForNodesToBeIndexed = [];
 
     /**
+     * @var array
+     */
+    protected $targetWorkspaceNamesForNodesToBeRemoved = [];
+
+    /**
      * the indexing batch size (from the settings)
      *
      * @var integer
@@ -71,28 +76,35 @@ class NodeIndexingManager
      * Schedule a node for indexing
      *
      * @param NodeInterface $node
-     * @param mixed $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
+     * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function indexNode(NodeInterface $node, $targetWorkspace = null)
+    public function indexNode(NodeInterface $node, Workspace $targetWorkspace = null)
     {
-        $this->nodesToBeRemoved->detach($node);
-        $this->nodesToBeIndexed->attach($node);
-        $this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof Workspace ? $targetWorkspace->getName() : null;
+        // if this is triggered via afterNodePublishing, it could be a deletion, check and handle
+        if ($node->isRemoved() && $targetWorkspace !== null && $targetWorkspace->getBaseWorkspace() === null) {
+            $this->removeNode($node, $targetWorkspace);
+        } else {
+            $this->nodesToBeRemoved->detach($node);
+            $this->nodesToBeIndexed->attach($node);
+            $this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof Workspace ? $targetWorkspace->getName() : null;
 
-        $this->flushQueuesIfNeeded();
+            $this->flushQueuesIfNeeded();
+        }
     }
 
     /**
      * Schedule a node for removal of the index
      *
      * @param NodeInterface $node
+     * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function removeNode(NodeInterface $node)
+    public function removeNode(NodeInterface $node, Workspace $targetWorkspace = null)
     {
         $this->nodesToBeIndexed->detach($node);
         $this->nodesToBeRemoved->attach($node);
+        $this->targetWorkspaceNamesForNodesToBeRemoved[$node->getContextPath()] = $targetWorkspace instanceof Workspace ? $targetWorkspace->getName() : null;
 
         $this->flushQueuesIfNeeded();
     }
@@ -129,13 +141,18 @@ class NodeIndexingManager
 
             /** @var NodeInterface $nodeToBeRemoved */
             foreach ($this->nodesToBeRemoved as $nodeToBeRemoved) {
-                $this->nodeIndexer->removeNode($nodeToBeRemoved);
+                if (isset($this->targetWorkspaceNamesForNodesToBeRemoved[$nodeToBeRemoved->getContextPath()])) {
+                    $this->nodeIndexer->removeNode($nodeToBeRemoved, $this->targetWorkspaceNamesForNodesToBeRemoved[$nodeToBeRemoved->getContextPath()]);
+                } else {
+                    $this->nodeIndexer->removeNode($nodeToBeRemoved);
+                }
             }
 
             $this->nodeIndexer->flush();
             $this->nodesToBeIndexed = new \SplObjectStorage();
             $this->nodesToBeRemoved = new \SplObjectStorage();
             $this->targetWorkspaceNamesForNodesToBeIndexed = [];
+            $this->targetWorkspaceNamesForNodesToBeRemoved = [];
         };
 
         if ($this->nodeIndexer instanceof BulkNodeIndexerInterface) {
