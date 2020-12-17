@@ -97,10 +97,10 @@ class NodeIndexingManager
      * Schedule a node for removal of the index
      *
      * @param NodeInterface $node
-     * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
+     * @param mixed $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in. Otherwise a signal information string can be found in the second argument.
      * @return void
      */
-    public function removeNode(NodeInterface $node, Workspace $targetWorkspace = null)
+    public function removeNode(NodeInterface $node, $targetWorkspace = null): void
     {
         $this->nodesToBeIndexed->detach($node);
         $this->nodesToBeRemoved->attach($node);
