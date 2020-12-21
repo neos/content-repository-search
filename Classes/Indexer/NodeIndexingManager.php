@@ -79,7 +79,7 @@ class NodeIndexingManager
      * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function indexNode(NodeInterface $node, Workspace $targetWorkspace = null)
+    public function indexNode(NodeInterface $node, $targetWorkspace = null)
     {
         // if this is triggered via afterNodePublishing, it could be a deletion, check and handle
         if ($node->isRemoved() && $targetWorkspace !== null && $targetWorkspace->getBaseWorkspace() === null) {
