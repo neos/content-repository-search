@@ -157,7 +157,9 @@ class IndexingHelper implements ProtectedContextAwareInterface
      */
     public function extractHtmlTags($string): array
     {
-        if (!$string || trim($string) === "") return [];
+        if (!$string || trim($string) === "") {
+            return [];
+        }
         
         // prevents concatenated words when stripping tags afterwards
         $string = str_replace(['<', '>'], [' <', '> '], $string);
