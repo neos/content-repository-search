@@ -141,11 +141,7 @@ class NodeIndexingManager
 
             /** @var NodeInterface $nodeToBeRemoved */
             foreach ($this->nodesToBeRemoved as $nodeToBeRemoved) {
-                if (isset($this->targetWorkspaceNamesForNodesToBeRemoved[$nodeToBeRemoved->getContextPath()])) {
-                    $this->nodeIndexer->removeNode($nodeToBeRemoved, $this->targetWorkspaceNamesForNodesToBeRemoved[$nodeToBeRemoved->getContextPath()]);
-                } else {
-                    $this->nodeIndexer->removeNode($nodeToBeRemoved);
-                }
+                $this->nodeIndexer->removeNode($nodeToBeRemoved);
             }
 
             $this->nodeIndexer->flush();
