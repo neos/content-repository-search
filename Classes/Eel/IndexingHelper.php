@@ -160,7 +160,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
         if (!$string || trim($string) === "") {
             return [];
         }
-        
+
         // prevents concatenated words when stripping tags afterwards
         $string = str_replace(['<', '>'], [' <', '> '], $string);
         // strip all tags except h1-6
@@ -231,11 +231,19 @@ class IndexingHelper implements ProtectedContextAwareInterface
             }
             return $result;
         } elseif ($value instanceof AssetInterface) {
-            $assetContent = $this->assetExtractor->extract($value);
-            $getter = 'get' . lcfirst($field);
-            return $assetContent->$getter();
+            try {
+                $assetContent = $this->assetExtractor->extract($value);
+                $getter = 'get' . lcfirst($field);
+                $content = $assetContent->$getter();
+            } catch (\Throwable $t) {
+                $this->logger->error('Value of type ' . gettype($value) . ' - ' . get_class($value) . ' could not be extracted: ' . $t->getMessage(), LogEnvironment::fromMethodName(__METHOD__));
+                return null;
+            }
+
+            return $content;
         } else {
             $this->logger->error('Value of type ' . gettype($value) . ' - ' . get_class($value) . ' could not be extracted.', LogEnvironment::fromMethodName(__METHOD__));
+            return null;
         }
     }
 
