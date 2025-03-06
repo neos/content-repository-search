@@ -10,7 +10,6 @@ use Neos\Flow\Annotations as Flow;
 
 class RealTimeIndexCatchUpHookFactory implements CatchUpHookFactoryInterface
 {
-
     #[Flow\InjectConfiguration()]
     protected array $configuration;
 
