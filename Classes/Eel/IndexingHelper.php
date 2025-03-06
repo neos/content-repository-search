@@ -13,13 +13,17 @@ namespace Neos\ContentRepository\Search\Eel;
  * source code.
  */
 
+use Neos\ContentRepository\Core\NodeType\NodeType;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindAncestorNodesFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\ContentRepository\Search\AssetExtraction\AssetExtractorInterface;
-use Neos\Flow\Annotations as Flow;
+use Neos\ContentRepository\Search\Dto\NodeAggregateIdPath;
+use Neos\ContentRepository\Search\Exception\IndexingException;
+use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Eel\ProtectedContextAwareInterface;
+use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Log\Utility\LogEnvironment;
 use Neos\Media\Domain\Model\AssetInterface;
-use Neos\ContentRepository\Domain\Model\NodeType;
-use Neos\ContentRepository\Search\Exception\IndexingException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -39,6 +43,9 @@ class IndexingHelper implements ProtectedContextAwareInterface
      */
     protected $logger;
 
+    #[Flow\Inject]
+    protected ContentRepositoryRegistry $contentRepositoryRegistry;
+
     /**
      * Build all path prefixes. From an input such as:
      *
@@ -57,9 +64,9 @@ class IndexingHelper implements ProtectedContextAwareInterface
      * @param string $path
      * @return array<string>
      */
-    public function buildAllPathPrefixes(string $path): array
+    public function buildAllPathPrefixes(?string $path): array
     {
-        if ($path === '') {
+        if ($path === '' || $path === null) {
             return [];
         }
 
@@ -86,12 +93,14 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Returns an array of node type names including the passed $nodeType and all its supertypes, recursively
      *
-     * @param NodeType $nodeType
+     * @param NodeType $nodeTypeName
      * @return array<String>
      */
-    public function extractNodeTypeNamesAndSupertypes(NodeType $nodeType): array
+    public function extractNodeTypeNamesAndSupertypes(Node $node): array
     {
         $nodeTypeNames = [];
+        $nodeTypeManager = $this->contentRepositoryRegistry->get($node->contentRepositoryId)->getNodeTypeManager();
+        $nodeType = $nodeTypeManager->getNodeType($node->nodeTypeName);
         $this->extractNodeTypeNamesAndSupertypesInternal($nodeType, $nodeTypeNames);
         return array_values($nodeTypeNames);
     }
@@ -105,7 +114,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
      */
     protected function extractNodeTypeNamesAndSupertypesInternal(NodeType $nodeType, array &$nodeTypeNames): void
     {
-        $nodeTypeNames[$nodeType->getName()] = $nodeType->getName();
+        $nodeTypeNames[$nodeType->name->value] = $nodeType->name->value;
         foreach ($nodeType->getDeclaredSuperTypes() as $superType) {
             $this->extractNodeTypeNamesAndSupertypesInternal($superType, $nodeTypeNames);
         }
@@ -114,7 +123,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Convert an array of nodes to an array of node identifiers
      *
-     * @param array<NodeInterface> $nodes
+     * @param array<Node> $nodes
      * @return array
      */
     public function convertArrayOfNodesToArrayOfNodeIdentifiers($nodes): array
@@ -133,7 +142,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Convert an array of nodes to an array of node property
      *
-     * @param array<NodeInterface> $nodes
+     * @param array<Node> $nodes
      * @param string $propertyName
      * @return array
      */
@@ -245,6 +254,20 @@ class IndexingHelper implements ProtectedContextAwareInterface
             $this->logger->error('Value of type ' . gettype($value) . ' - ' . get_class($value) . ' could not be extracted.', LogEnvironment::fromMethodName(__METHOD__));
             return null;
         }
+    }
+
+    /**
+     * Returns a reliable path based on node aggregate ids to display the position of the node in the hierarchy.
+     */
+    public function aggregateIdPath(Node $node): string
+    {
+        $subgraph = $this->contentRepositoryRegistry->subgraphForNode($node);
+        $ancestors = $subgraph->findAncestorNodes(
+            $node->aggregateId,
+            FindAncestorNodesFilter::create()
+        )->reverse();
+
+        return NodeAggregateIdPath::fromNodes($ancestors)->serializeToString();
     }
 
     /**

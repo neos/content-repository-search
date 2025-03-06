@@ -11,8 +11,9 @@ namespace Neos\ContentRepository\Search\Indexer;
  * source code.
  */
 
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Annotations as Flow;
-use Neos\ContentRepository\Domain\Model\NodeInterface;
 
 /**
  * Indexer for Content Repository Nodes.
@@ -23,19 +24,19 @@ interface NodeIndexerInterface
     /**
      * Schedule a node for indexing
      *
-     * @param NodeInterface $node
-     * @param mixed $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
+     * @param Node $node
+     * @param mixed $targetWorkspaceName In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function indexNode(NodeInterface $node, $targetWorkspace = null): void;
+    public function indexNode(Node $node, ?WorkspaceName $targetWorkspaceName = null): void;
 
     /**
      * Schedule a node for removal of the index
      *
-     * @param NodeInterface $node
+     * @param Node $node
      * @return void
      */
-    public function removeNode(NodeInterface $node): void;
+    public function removeNode(Node $node, ?WorkspaceName $targetWorkspaceName = null): void;
 
     /**
      * Perform all changes to the index queued up. If an implementation directly changes the index this can be no operation.

@@ -13,13 +13,14 @@ namespace Neos\ContentRepository\Search\Indexer;
  * source code.
  */
 
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Search\Exception\IndexingException;
+use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Eel\Utility as EelUtility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Configuration\Exception\InvalidConfigurationTypeException;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
-use Neos\ContentRepository\Domain\Model\NodeInterface;
-use Neos\ContentRepository\Search\Exception\IndexingException;
 
 /**
  *
@@ -51,6 +52,9 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      */
     protected $defaultContextVariables;
 
+    #[Flow\Inject]
+    protected ContentRepositoryRegistry $contentRepositoryRegistry;
+
     /**
      * Called by the Flow object framework after creating the object and resolving all dependencies.
      *
@@ -68,13 +72,13 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * Evaluate an Eel expression.
      *
      * @param string $expression The Eel expression to evaluate
-     * @param NodeInterface $node
+     * @param Node $node
      * @param string $propertyName
      * @param mixed $value
      * @return mixed The result of the evaluated Eel expression
      * @throws \Neos\Eel\Exception
      */
-    protected function evaluateEelExpression($expression, NodeInterface $node, $propertyName, $value)
+    protected function evaluateEelExpression($expression, Node $node, $propertyName, $value)
     {
         if ($this->defaultContextVariables === null) {
             $this->defaultContextVariables = EelUtility::getDefaultContextVariables($this->settings['defaultContext']);
@@ -90,7 +94,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
     }
 
     /**
-     * @param NodeInterface $node
+     * @param Node $node
      * @param string $propertyName
      * @param string $fulltextExtractionExpression
      * @param array $fulltextIndexOfNode
@@ -98,13 +102,13 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @throws \Neos\ContentRepository\Exception\NodeException
      * @throws \Neos\Eel\Exception
      */
-    protected function extractFulltext(NodeInterface $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode): void
+    protected function extractFulltext(Node $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode): void
     {
         if ($fulltextExtractionExpression !== '') {
             $extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : null));
 
             if (!is_array($extractedFulltext)) {
-                throw new IndexingException('The fulltext index for property "' . $propertyName . '" of node "' . $node->getPath() . '" could not be retrieved; the Eel expression "' . $fulltextExtractionExpression . '" is no valid fulltext extraction expression.');
+                throw new IndexingException('The fulltext index for property "' . $propertyName . '" of node "' . $node->aggregateId->value . '" could not be retrieved; the Eel expression "' . $fulltextExtractionExpression . '" is no valid fulltext extraction expression.');
             }
 
             foreach ($extractedFulltext as $bucket => $value) {
@@ -124,18 +128,18 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
     /**
      * Extracts all property values according to configuration and additionally adds to the referenced fulltextData array if needed.
      *
-     * @param NodeInterface $node
+     * @param Node $node
      * @param array $fulltextData
      * @param \Closure $nonIndexedPropertyErrorHandler
      * @return array
      * @throws IndexingException
-     * @throws \Neos\ContentRepository\Exception\NodeException
      * @throws \Neos\Eel\Exception
      */
-    protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null): array
+    protected function extractPropertiesAndFulltext(Node $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null): array
     {
         $nodePropertiesToBeStoredInIndex = [];
-        $nodeType = $node->getNodeType();
+        $contentRepository = $this->contentRepositoryRegistry->get($node->contentRepositoryId);
+        $nodeType = $contentRepository->getNodeTypeManager()->getNodeType($node->nodeTypeName);
         $fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
 
         foreach ($nodeType->getProperties() as $propertyName => $propertyConfiguration) {
@@ -172,13 +176,14 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
     /**
      * Whether the node has fulltext indexing enabled.
      *
-     * @param NodeInterface $node
+     * @param Node $node
      * @return bool
      */
-    protected function isFulltextEnabled(NodeInterface $node): bool
+    protected function isFulltextEnabled(Node $node): bool
     {
-        if ($node->getNodeType()->hasConfiguration('search')) {
-            $searchSettingsForNode = $node->getNodeType()->getConfiguration('search');
+        $contentRepository = $this->contentRepositoryRegistry->get($node->contentRepositoryId);
+        if ($contentRepository->getNodeTypeManager()->getNodeType($node->nodeTypeName)->hasConfiguration('search')) {
+            $searchSettingsForNode = $contentRepository->getNodeTypeManager()->getNodeType($node->nodeTypeName)->getConfiguration('search');
             if (isset($searchSettingsForNode['fulltext']['enable']) && $searchSettingsForNode['fulltext']['enable'] === true) {
                 return true;
             }

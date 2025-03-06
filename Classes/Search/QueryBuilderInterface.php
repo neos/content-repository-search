@@ -12,7 +12,7 @@ namespace Neos\ContentRepository\Search\Search;
  */
 
 use Neos\Flow\Annotations as Flow;
-use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 
 /**
  * Query Builder Interface for Content Repository searches
@@ -73,7 +73,7 @@ interface QueryBuilderInterface
     /**
      * Execute the query and return the list of nodes as result
      *
-     * @return \Traversable<\Neos\ContentRepository\Domain\Model\NodeInterface>
+     * @return \Traversable<Node>
      */
     public function execute(): \Traversable;
 
@@ -88,10 +88,10 @@ interface QueryBuilderInterface
      * Sets the starting point for this query. Search result should only contain nodes that
      * match the context of the given node and have it as parent node in their rootline.
      *
-     * @param NodeInterface $contextNode
+     * @param Node $contextNode
      * @return QueryBuilderInterface
      */
-    public function query(NodeInterface $contextNode): QueryBuilderInterface;
+    public function query(Node $contextNode): QueryBuilderInterface;
 
     /**
      * Filter by node type, taking inheritance into account.

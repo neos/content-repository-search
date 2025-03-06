@@ -1,4 +1,5 @@
 <?php
+
 namespace Neos\ContentRepository\Search\Indexer;
 
 /*
@@ -11,9 +12,10 @@ namespace Neos\ContentRepository\Search\Indexer;
  * source code.
  */
 
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAddress;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Annotations as Flow;
-use Neos\ContentRepository\Domain\Model\NodeInterface;
-use Neos\ContentRepository\Domain\Model\Workspace;
 
 /**
  * Indexer for Content Repository Nodes. Manages an indexing queue to allow for deferred indexing.
@@ -33,12 +35,12 @@ class NodeIndexingManager
     protected $nodesToBeRemoved;
 
     /**
-     * @var array
+     * @var array<WorkspaceName>
      */
     protected $targetWorkspaceNamesForNodesToBeIndexed = [];
 
     /**
-     * @var array
+     * @var array<WorkspaceName>
      */
     protected $targetWorkspaceNamesForNodesToBeRemoved = [];
 
@@ -75,36 +77,31 @@ class NodeIndexingManager
     /**
      * Schedule a node for indexing
      *
-     * @param NodeInterface $node
-     * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
+     * @param Node $node
+     * @param WorkspaceName $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function indexNode(NodeInterface $node, Workspace $targetWorkspace = null)
+    public function indexNode(Node $node, ?WorkspaceName $targetWorkspace = null)
     {
-        // if this is triggered via afterNodePublishing, it could be a deletion, check and handle
-        if ($node->isRemoved() && $targetWorkspace !== null && $targetWorkspace->getBaseWorkspace() === null) {
-            $this->removeNode($node, $targetWorkspace);
-        } else {
-            $this->nodesToBeRemoved->detach($node);
-            $this->nodesToBeIndexed->attach($node);
-            $this->targetWorkspaceNamesForNodesToBeIndexed[$node->getContextPath()] = $targetWorkspace instanceof Workspace ? $targetWorkspace->getName() : null;
+        $this->nodesToBeRemoved->detach($node);
+        $this->nodesToBeIndexed->attach($node);
+        $this->targetWorkspaceNamesForNodesToBeIndexed[NodeAddress::fromNode($node)->toJson()] = $targetWorkspace instanceof WorkspaceName ? $targetWorkspace : null;
 
-            $this->flushQueuesIfNeeded();
-        }
+        $this->flushQueuesIfNeeded();
     }
 
     /**
      * Schedule a node for removal of the index
      *
-     * @param NodeInterface $node
-     * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
+     * @param Node $node
+     * @param WorkspaceName|null $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function removeNode(NodeInterface $node, Workspace $targetWorkspace = null)
+    public function removeNode(Node $node, ?WorkspaceName $targetWorkspace = null)
     {
         $this->nodesToBeIndexed->detach($node);
         $this->nodesToBeRemoved->attach($node);
-        $this->targetWorkspaceNamesForNodesToBeRemoved[$node->getContextPath()] = $targetWorkspace instanceof Workspace ? $targetWorkspace->getName() : null;
+        $this->targetWorkspaceNamesForNodesToBeRemoved[NodeAddress::fromNode($node)->toJson()] = $targetWorkspace instanceof WorkspaceName ? $targetWorkspace : null;
 
         $this->flushQueuesIfNeeded();
     }
@@ -130,19 +127,19 @@ class NodeIndexingManager
     public function flushQueues()
     {
         $flush = function () {
-            /** @var NodeInterface $nodeToBeIndexed */
+            /** @var Node $nodeToBeIndexed */
             foreach ($this->nodesToBeIndexed as $nodeToBeIndexed) {
-                if (isset($this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()])) {
-                    $this->nodeIndexer->indexNode($nodeToBeIndexed, $this->targetWorkspaceNamesForNodesToBeIndexed[$nodeToBeIndexed->getContextPath()]);
+                if (isset($this->targetWorkspaceNamesForNodesToBeIndexed[NodeAddress::fromNode($nodeToBeIndexed)->toJson()])) {
+                    $this->nodeIndexer->indexNode($nodeToBeIndexed, $this->targetWorkspaceNamesForNodesToBeIndexed[NodeAddress::fromNode($nodeToBeIndexed)->toJson()]);
                 } else {
                     $this->nodeIndexer->indexNode($nodeToBeIndexed);
                 }
             }
 
-            /** @var NodeInterface $nodeToBeRemoved */
+            /** @var Node $nodeToBeRemoved */
             foreach ($this->nodesToBeRemoved as $nodeToBeRemoved) {
-                if (isset($this->targetWorkspaceNamesForNodesToBeRemoved[$nodeToBeRemoved->getContextPath()])) {
-                    $this->nodeIndexer->removeNode($nodeToBeRemoved, $this->targetWorkspaceNamesForNodesToBeRemoved[$nodeToBeRemoved->getContextPath()]);
+                if (isset($this->targetWorkspaceNamesForNodesToBeRemoved[NodeAddress::fromNode($nodeToBeRemoved)->toJson()])) {
+                    $this->nodeIndexer->removeNode($nodeToBeRemoved, $this->targetWorkspaceNamesForNodesToBeRemoved[NodeAddress::fromNode($nodeToBeRemoved)->toJson()]);
                 } else {
                     $this->nodeIndexer->removeNode($nodeToBeRemoved);
                 }
