@@ -53,7 +53,7 @@ class NodeIndexingManager
 
     /**
      * @Flow\Inject
-     * @var \Neos\ContentRepository\Search\Indexer\NodeIndexerInterface
+     * @var NodeIndexerInterface
      */
     protected $nodeIndexer;
 

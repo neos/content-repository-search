@@ -1,6 +1,12 @@
 preset: psr2
 
+version: 8.2
+
 finder:
   path:
     - "Classes"
     - "Tests"
+
+enabled:
+  - no_unused_imports
+  - short_array_syntax
