@@ -1,4 +1,5 @@
 <?php
+
 namespace Neos\ContentRepository\Search\Indexer;
 
 /*
@@ -13,7 +14,6 @@ namespace Neos\ContentRepository\Search\Indexer;
 
 use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
-use Neos\Flow\Annotations as Flow;
 
 /**
  * Indexer for Content Repository Nodes.

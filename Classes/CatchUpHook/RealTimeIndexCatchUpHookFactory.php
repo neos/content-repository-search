@@ -16,8 +16,7 @@ class RealTimeIndexCatchUpHookFactory implements CatchUpHookFactoryInterface
 
     public function __construct(
         private readonly NodeIndexingManager $nodeIndexingManager,
-    )
-    {
+    ) {
     }
 
     public function build(CatchUpHookFactoryDependencies $dependencies): CatchUpHookInterface

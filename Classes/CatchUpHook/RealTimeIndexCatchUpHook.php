@@ -32,8 +32,7 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
         private readonly ContentGraphReadModelInterface $contentGraphReadModel,
         private readonly NodeIndexingManager $nodeIndexingManager,
         private readonly bool $enabledRealTimeIndexing = true,
-    )
-    {
+    ) {
     }
 
     public function onBeforeCatchUp(SubscriptionStatus $subscriptionStatus): void
@@ -71,7 +70,7 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
             NodeSpecializationVariantWasCreated::class => $this->updateNode($eventInstance->getWorkspaceName(), $eventInstance->nodeAggregateId, $eventInstance->specializationOrigin->toDimensionSpacePoint()),
             NodePropertiesWereSet::class => $this->updateNode($eventInstance->getWorkspaceName(), $eventInstance->nodeAggregateId, $eventInstance->originDimensionSpacePoint->toDimensionSpacePoint()),
 
-            SubtreeWasTagged::class => array_map(fn($dimensionSpacePoint) => $this->updateNode($eventInstance->getWorkspaceName(), $eventInstance->nodeAggregateId, $dimensionSpacePoint), $eventInstance->affectedDimensionSpacePoints),
+            SubtreeWasTagged::class => array_map(fn ($dimensionSpacePoint) => $this->updateNode($eventInstance->getWorkspaceName(), $eventInstance->nodeAggregateId, $dimensionSpacePoint), $eventInstance->affectedDimensionSpacePoints),
 
             // TODO: Currently it is not possible to clear the state in elasticsearch to get the state of the base workspace. But it was the same before Neos 9.
             // WorkspaceWasDiscarded::class => $this->discardWorkspace($eventInstance->getWorkspaceName()),
