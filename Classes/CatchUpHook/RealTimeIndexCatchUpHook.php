@@ -11,7 +11,9 @@ use Neos\ContentRepository\Core\Feature\NodeRemoval\Event\NodeAggregateWasRemove
 use Neos\ContentRepository\Core\Feature\NodeVariation\Event\NodeGeneralizationVariantWasCreated;
 use Neos\ContentRepository\Core\Feature\NodeVariation\Event\NodePeerVariantWasCreated;
 use Neos\ContentRepository\Core\Feature\NodeVariation\Event\NodeSpecializationVariantWasCreated;
+use Neos\ContentRepository\Core\Feature\SubtreeTagging\Dto\SubtreeTag;
 use Neos\ContentRepository\Core\Feature\SubtreeTagging\Event\SubtreeWasTagged;
+use Neos\ContentRepository\Core\Feature\SubtreeTagging\Event\SubtreeWasUntagged;
 use Neos\ContentRepository\Core\Projection\CatchUpHook\CatchUpHookInterface;
 use Neos\ContentRepository\Core\Projection\ContentGraph\ContentGraphReadModelInterface;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindDescendantNodesFilter;
@@ -22,6 +24,7 @@ use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\ContentRepository\Core\Subscription\SubscriptionStatus;
 use Neos\ContentRepository\Search\Indexer\NodeIndexingManager;
 use Neos\EventStore\Model\EventEnvelope;
+use Neos\Neos\Domain\Service\NeosSubtreeTag;
 
 class RealTimeIndexCatchUpHook implements CatchUpHookInterface
 {
@@ -70,7 +73,8 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
             NodeSpecializationVariantWasCreated::class => $this->updateNode($eventInstance->getWorkspaceName(), $eventInstance->nodeAggregateId, $eventInstance->specializationOrigin->toDimensionSpacePoint()),
             NodePropertiesWereSet::class => $this->updateNode($eventInstance->getWorkspaceName(), $eventInstance->nodeAggregateId, $eventInstance->originDimensionSpacePoint->toDimensionSpacePoint()),
 
-            SubtreeWasTagged::class => array_map(fn ($dimensionSpacePoint) => $this->updateNode($eventInstance->getWorkspaceName(), $eventInstance->nodeAggregateId, $dimensionSpacePoint), $eventInstance->affectedDimensionSpacePoints),
+            SubtreeWasTagged::class => $this->handleSubtreeTags($eventInstance->getWorkspaceName(), $eventInstance->nodeAggregateId, $eventInstance->tag, $eventInstance->affectedDimensionSpacePoints),
+            SubtreeWasUntagged::class => $this->updateNodesInDimensionSpacePoints($eventInstance->getWorkspaceName(), $eventInstance->nodeAggregateId, $eventInstance->affectedDimensionSpacePoints),
 
             // TODO: Currently it is not possible to clear the state in elasticsearch to get the state of the base workspace. But it was the same before Neos 9.
             // WorkspaceWasDiscarded::class => $this->discardWorkspace($eventInstance->getWorkspaceName()),
@@ -97,6 +101,9 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
         $this->nodeIndexingManager->flushQueues();
     }
 
+    /**
+     * Triggers update of node index.
+     */
     protected function updateNode(WorkspaceName $workspaceName, NodeAggregateId $nodeAggregateId, DimensionSpacePoint $dimensionSpacePoint): void
     {
         $contentGraph = $this->contentGraphReadModel->getContentGraph($workspaceName);
@@ -110,6 +117,19 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
         $this->nodeIndexingManager->indexNode($node);
     }
 
+    /**
+     * Wrapper for self::updateNode() to iterate multiple dimension space points.
+     */
+    protected function updateNodesInDimensionSpacePoints(WorkspaceName $workspaceName, NodeAggregateId $nodeAggregateId, DimensionSpacePointSet $dimensionSpacePointSet): void
+    {
+        foreach ($dimensionSpacePointSet as $dimensionSpacePoint) {
+            $this->updateNode($workspaceName, $nodeAggregateId, $dimensionSpacePoint);
+        }
+    }
+
+    /**
+     * Triggers removal of node index.
+     */
     private function removeNodes(WorkspaceName $workspaceName, NodeAggregateId $nodeAggregateId, DimensionSpacePointSet $dimensionSpacePoints): void
     {
         $contentGraph = $this->contentGraphReadModel->getContentGraph($workspaceName);
@@ -125,5 +145,21 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
                 $this->nodeIndexingManager->removeNode($descendant);
             }
         }
+    }
+
+    /**
+     * Handles subtree tags added to nodes.
+     */
+    private function handleSubtreeTags(WorkspaceName $workspaceName, NodeAggregateId $nodeAggregateId, SubtreeTag $tag, DimensionSpacePointSet $affectedDimensionSpacePoints): void
+    {
+        // TODO: Enable after beta release
+        // Remove documents from index on soft delete
+        //if ($tag === NeosSubtreeTag::removed()) {
+        if ($tag === SubtreeTag::fromString('removed')) {
+            $this->removeNodes($workspaceName, $nodeAggregateId, $affectedDimensionSpacePoints);
+            return;
+        }
+
+        $this->updateNodesInDimensionSpacePoints($workspaceName, $nodeAggregateId, $affectedDimensionSpacePoints);
     }
 }
