@@ -11,7 +11,6 @@ namespace Neos\ContentRepository\Search\Exception;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 
 /**
  * An Indexing Exception

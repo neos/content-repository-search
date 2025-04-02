@@ -34,12 +34,12 @@ class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
     public function buildAllPathPrefixesWorksWithRelativePaths()
     {
         $input = 'foo/bar/baz/testing';
-        $expected = array(
+        $expected = [
             'foo',
             'foo/bar',
             'foo/bar/baz',
             'foo/bar/baz/testing',
-        );
+        ];
 
         self::assertSame($expected, $this->helper->buildAllPathPrefixes($input));
     }
@@ -50,13 +50,13 @@ class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
     public function buildAllPathPrefixesWorksWithAbsolutePaths()
     {
         $input = '/foo/bar/baz/testing';
-        $expected = array(
+        $expected = [
             '/',
             '/foo',
             '/foo/bar',
             '/foo/bar/baz',
             '/foo/bar/baz/testing',
-        );
+        ];
 
         self::assertSame($expected, $this->helper->buildAllPathPrefixes($input));
     }
@@ -67,9 +67,9 @@ class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
     public function buildAllPathPrefixesWorksWithEdgeCase()
     {
         $input = '/';
-        $expected = array(
+        $expected = [
             '/'
-        );
+        ];
 
         self::assertSame($expected, $this->helper->buildAllPathPrefixes($input));
     }
@@ -80,10 +80,10 @@ class IndexingHelperTest extends \Neos\Flow\Tests\UnitTestCase
     public function extractHtmlTagsWorks()
     {
         $input = 'So.. I want to know... <h2>How do you feel?</h2>This is <p><b>some</b>Text.<h2>I Feel so good</h2>... so good...</p>';
-        $expected = array(
+        $expected = [
             'text' => 'So.. I want to know... This is some Text. ... so good... ',
             'h2' => ' How do you feel? I Feel so good '
-        );
+        ];
 
         self::assertSame($expected, $this->helper->extractHtmlTags($input));
     }

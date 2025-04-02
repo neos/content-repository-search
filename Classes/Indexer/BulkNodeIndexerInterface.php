@@ -11,7 +11,6 @@ namespace Neos\ContentRepository\Search\Indexer;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 
 /**
  * Indexer for Content Repository Nodes with bulk mode support
