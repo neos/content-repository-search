@@ -1,0 +1,8 @@
+Neos:
+  ContentRepositoryRegistry:
+    presets:
+      'default':
+        contentGraphProjection:
+          catchUpHooks:
+            'Neos.ContentRepository.Search:RealtimeIndex':
+              factoryObjectName: \Neos\ContentRepository\Search\CatchUpHook\RealTimeIndexCatchUpHookFactory

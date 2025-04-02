@@ -3,9 +3,10 @@
     "type": "neos-package",
     "description": "Common code and interface for a Neos CR search implementation",
     "require": {
-        "php": ">=7.3",
-        "neos/flow": "^5.1 || ^6.0 || ^7.0 || ^8.0 || dev-master",
-        "neos/content-repository": "^4.0 || ^5.0 || ^7.0 || ^8.0 || dev-master"
+        "php": ">=8.2",
+        "neos/flow": "^9.0 || dev-master",
+        "neos/contentrepository-core": "^9.0 || dev-master",
+        "neos/contentrepositoryregistry": "^9.0 || dev-master"
     },
     "replace": {
         "typo3/typo3cr-search": "self.version"

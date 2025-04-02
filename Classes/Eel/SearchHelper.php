@@ -11,11 +11,11 @@ namespace Neos\ContentRepository\Search\Eel;
  * source code.
  */
 
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Search\Search\QueryBuilderInterface;
 use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManager;
-use Neos\ContentRepository\Domain\Model\NodeInterface;
-use Neos\ContentRepository\Search\Search\QueryBuilderInterface;
 
 /**
  * Eel Helper to start search queries
@@ -31,10 +31,10 @@ class SearchHelper implements ProtectedContextAwareInterface
     /**
      * Create a new Search Query underneath the given $contextNode
      *
-     * @param NodeInterface $contextNode
+     * @param Node $contextNode
      * @return QueryBuilderInterface
      */
-    public function query(NodeInterface $contextNode): QueryBuilderInterface
+    public function query(Node $contextNode): QueryBuilderInterface
     {
         $queryBuilder = $this->objectManager->get(QueryBuilderInterface::class);
 

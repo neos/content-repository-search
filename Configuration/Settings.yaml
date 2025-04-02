@@ -28,6 +28,7 @@ Neos:
         Array: Neos\Eel\Helper\ArrayHelper
         Date: Neos\Eel\Helper\DateHelper
         Indexing: Neos\ContentRepository\Search\Eel\IndexingHelper
+        Neos.Node: Neos\Neos\Fusion\Helper\NodeHelper
   Fusion:
     defaultContext:
       Search: Neos\ContentRepository\Search\Eel\SearchHelper
