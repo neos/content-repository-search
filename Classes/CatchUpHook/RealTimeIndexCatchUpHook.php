@@ -139,17 +139,11 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
         foreach ($dimensionSpacePoints as $dimensionSpacePoint) {
             $subgraph = $contentGraph->getSubgraph($dimensionSpacePoint, VisibilityConstraints::createEmpty());
             $node = $subgraph->findNodeById($nodeAggregateId);
-<<<<<<< Updated upstream
             if ($node === null) {
                 // No node in this dimension. So nothing to do here.
                 continue;
             }
             $this->nodeIndexingManager->removeNode($node);
-=======
-            if ($node instanceof Node) {
-                $this->nodeIndexingManager->removeNode($node);
-            }
->>>>>>> Stashed changes
 
             $descendants = $subgraph->findDescendantNodes($nodeAggregateId, FindDescendantNodesFilter::create());
 

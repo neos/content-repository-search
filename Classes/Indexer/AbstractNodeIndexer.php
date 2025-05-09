@@ -13,6 +13,7 @@ namespace Neos\ContentRepository\Search\Indexer;
  * source code.
  */
 
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindReferencesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\ContentRepository\Search\Exception\IndexingException;
 use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
@@ -78,7 +79,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @return mixed The result of the evaluated Eel expression
      * @throws \Neos\Eel\Exception
      */
-    protected function evaluateEelExpression($expression, Node $node, $propertyName, $value)
+    protected function evaluateEelExpression(string $expression, Node $node, string $propertyName, $value)
     {
         if ($this->defaultContextVariables === null) {
             $this->defaultContextVariables = EelUtility::getDefaultContextVariables($this->settings['defaultContext']);
@@ -142,20 +143,29 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
         $nodeType = $contentRepository->getNodeTypeManager()->getNodeType($node->nodeTypeName);
         $fulltextIndexingEnabledForNode = $this->isFulltextEnabled($node);
 
-        foreach ($nodeType->getProperties() as $propertyName => $propertyConfiguration) {
+        $propertiesAndReferences = array_merge(
+            $nodeType->getProperties(),
+            array_map(function ($reference) {
+                $reference['type'] = 'references';
+                return $reference;
+            }, $nodeType->getReferences())
+        );
+
+        foreach ($propertiesAndReferences as $propertyName => $propertyConfiguration) {
             if (isset($propertyConfiguration['search']) && array_key_exists('indexing', $propertyConfiguration['search'])) {
-                // This property is configured to not be index, so do not add a mapping for it
+                // This property is configured to not be indexed, so do not add a mapping for it
                 if ($propertyConfiguration['search']['indexing'] === false) {
                     continue;
                 }
 
                 if (!empty($propertyConfiguration['search']['indexing'])) {
-                    $valueToStore = $this->evaluateEelExpression($propertyConfiguration['search']['indexing'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : null));
+                    $valueToStore = $this->evaluateEelExpression($propertyConfiguration['search']['indexing'], $node, $propertyName, $this->getNodePropertyValue($node, $propertyName));
                     $nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
                 }
             } elseif (isset($propertyConfiguration['type'], $this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'])) {
                 if ($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'] !== '') {
-                    $valueToStore = $this->evaluateEelExpression($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'], $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : null));
+                    $valueToStore = $this->evaluateEelExpression($this->settings['defaultConfigurationPerType'][$propertyConfiguration['type']]['indexing'], $node, $propertyName, $this->getNodePropertyValue($node, $propertyName));
+
                     $nodePropertiesToBeStoredInIndex[$propertyName] = $valueToStore;
                 }
             } else {
@@ -172,6 +182,39 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
 
         return $nodePropertiesToBeStoredInIndex;
     }
+
+    private function getNodePropertyValue(Node $node, string $propertyOrReferenceName)
+    {
+        // Copied from \Neos\ContentRepository\NodeAccess\FlowQueryOperations\PropertyOperation
+        if ($node->hasProperty($propertyOrReferenceName)) {
+            return $node->getProperty($propertyOrReferenceName);
+        }
+
+        $contentRepository = $this->contentRepositoryRegistry->get($node->contentRepositoryId);
+        $nodeTypeManager = $contentRepository->getNodeTypeManager();
+
+        if ($nodeTypeManager->getNodeType($node->nodeTypeName)?->hasReference($propertyOrReferenceName)) {
+            // legacy access layer for references
+            $subgraph = $this->contentRepositoryRegistry->subgraphForNode($node);
+            $references = $subgraph->findReferences(
+                $node->aggregateId,
+                FindReferencesFilter::create(referenceName: $propertyOrReferenceName)
+            )->getNodes();
+
+            $maxItems = $nodeTypeManager->getNodeType($node->nodeTypeName)->getReferences()[$propertyOrReferenceName]['constraints']['maxItems'] ?? null;
+            if ($maxItems === 1) {
+                // legacy layer references with only one item like the previous `type: reference`
+                // (the node type transforms that to constraints.maxItems = 1)
+                // users still expect the property operation to return a single node instead of an array.
+                return $references->first();
+            }
+
+            return $references;
+        }
+
+        return null;
+    }
+
 
     /**
      * Whether the node has fulltext indexing enabled.
