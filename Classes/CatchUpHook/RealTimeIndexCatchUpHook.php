@@ -24,7 +24,8 @@ use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\ContentRepository\Core\Subscription\SubscriptionStatus;
 use Neos\ContentRepository\Search\Indexer\NodeIndexingManager;
 use Neos\EventStore\Model\EventEnvelope;
-use Neos\Neos\Domain\Service\NeosSubtreeTag;
+use Neos\Neos\Domain\SubtreeTagging\NeosSubtreeTag;
+use Neos\Neos\Domain\SubtreeTagging\NeosVisibilityConstraints;
 
 class RealTimeIndexCatchUpHook implements CatchUpHookInterface
 {
@@ -107,7 +108,7 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
     protected function updateNode(WorkspaceName $workspaceName, NodeAggregateId $nodeAggregateId, DimensionSpacePoint $dimensionSpacePoint): void
     {
         $contentGraph = $this->contentGraphReadModel->getContentGraph($workspaceName);
-        $node = $contentGraph->getSubgraph($dimensionSpacePoint, VisibilityConstraints::withoutRestrictions())->findNodeById($nodeAggregateId);
+        $node = $contentGraph->getSubgraph($dimensionSpacePoint, NeosVisibilityConstraints::excludeRemoved())->findNodeById($nodeAggregateId);
 
         if ($node === null) {
             // Node not found, nothing to do here.
@@ -135,8 +136,12 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
         $contentGraph = $this->contentGraphReadModel->getContentGraph($workspaceName);
 
         foreach ($dimensionSpacePoints as $dimensionSpacePoint) {
-            $subgraph = $contentGraph->getSubgraph($dimensionSpacePoint, VisibilityConstraints::withoutRestrictions());
+            $subgraph = $contentGraph->getSubgraph($dimensionSpacePoint, VisibilityConstraints::createEmpty());
             $node = $subgraph->findNodeById($nodeAggregateId);
+            if ($node === null) {
+                // No node in this dimension. So nothing to do here.
+                continue;
+            }
             $this->nodeIndexingManager->removeNode($node);
 
             $descendants = $subgraph->findDescendantNodes($nodeAggregateId, FindDescendantNodesFilter::create());
@@ -152,10 +157,8 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
      */
     private function handleSubtreeTags(WorkspaceName $workspaceName, NodeAggregateId $nodeAggregateId, SubtreeTag $tag, DimensionSpacePointSet $affectedDimensionSpacePoints): void
     {
-        // TODO: Enable after beta release
         // Remove documents from index on soft delete
-        //if ($tag === NeosSubtreeTag::removed()) {
-        if ($tag === SubtreeTag::fromString('removed')) {
+        if ($tag === NeosSubtreeTag::removed()) {
             $this->removeNodes($workspaceName, $nodeAggregateId, $affectedDimensionSpacePoints);
             return;
         }
