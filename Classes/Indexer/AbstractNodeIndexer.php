@@ -132,7 +132,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @throws \Neos\ContentRepository\Exception\NodeException
      * @throws \Neos\Eel\Exception
      */
-    protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null): array
+    protected function extractPropertiesAndFulltext(NodeInterface $node, array &$fulltextData, ?\Closure $nonIndexedPropertyErrorHandler = null): array
     {
         $nodePropertiesToBeStoredInIndex = [];
         $nodeType = $node->getNodeType();

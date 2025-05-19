@@ -76,10 +76,10 @@ class NodeIndexingManager
      * Schedule a node for indexing
      *
      * @param NodeInterface $node
-     * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
+     * @param Workspace|null $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function indexNode(NodeInterface $node, Workspace $targetWorkspace = null)
+    public function indexNode(NodeInterface $node, ?Workspace $targetWorkspace = null)
     {
         // if this is triggered via afterNodePublishing, it could be a deletion, check and handle
         if ($node->isRemoved() && $targetWorkspace !== null && $targetWorkspace->getBaseWorkspace() === null) {
@@ -97,10 +97,10 @@ class NodeIndexingManager
      * Schedule a node for removal of the index
      *
      * @param NodeInterface $node
-     * @param Workspace $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
+     * @param Workspace|null $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
-    public function removeNode(NodeInterface $node, Workspace $targetWorkspace = null)
+    public function removeNode(NodeInterface $node, ?Workspace $targetWorkspace = null)
     {
         $this->nodesToBeIndexed->detach($node);
         $this->nodesToBeRemoved->attach($node);
