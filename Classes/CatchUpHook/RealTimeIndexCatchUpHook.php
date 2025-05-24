@@ -17,6 +17,7 @@ use Neos\ContentRepository\Core\Feature\SubtreeTagging\Event\SubtreeWasUntagged;
 use Neos\ContentRepository\Core\Projection\CatchUpHook\CatchUpHookInterface;
 use Neos\ContentRepository\Core\Projection\ContentGraph\ContentGraphReadModelInterface;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindDescendantNodesFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
@@ -32,10 +33,10 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
     protected bool $handleEvents = false;
 
     public function __construct(
-        private readonly ContentRepositoryId $contentRepositoryId,
+        private readonly ContentRepositoryId            $contentRepositoryId,
         private readonly ContentGraphReadModelInterface $contentGraphReadModel,
-        private readonly NodeIndexingManager $nodeIndexingManager,
-        private readonly bool $enabledRealTimeIndexing = true,
+        private readonly NodeIndexingManager            $nodeIndexingManager,
+        private readonly bool                           $enabledRealTimeIndexing = true,
     ) {
     }
 
@@ -138,11 +139,17 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
         foreach ($dimensionSpacePoints as $dimensionSpacePoint) {
             $subgraph = $contentGraph->getSubgraph($dimensionSpacePoint, VisibilityConstraints::createEmpty());
             $node = $subgraph->findNodeById($nodeAggregateId);
+<<<<<<< Updated upstream
             if ($node === null) {
                 // No node in this dimension. So nothing to do here.
                 continue;
             }
             $this->nodeIndexingManager->removeNode($node);
+=======
+            if ($node instanceof Node) {
+                $this->nodeIndexingManager->removeNode($node);
+            }
+>>>>>>> Stashed changes
 
             $descendants = $subgraph->findDescendantNodes($nodeAggregateId, FindDescendantNodesFilter::create());
 
