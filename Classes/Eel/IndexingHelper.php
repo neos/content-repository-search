@@ -132,8 +132,10 @@ class IndexingHelper implements ProtectedContextAwareInterface
             return [];
         }
         $nodeIdentifiers = [];
+
+        /** @var Node $node */
         foreach ($nodes as $node) {
-            $nodeIdentifiers[] = $node->getIdentifier();
+            $nodeIdentifiers[] = $node->aggregateId->value;
         }
 
         return $nodeIdentifiers;

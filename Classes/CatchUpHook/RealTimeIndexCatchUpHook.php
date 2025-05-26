@@ -17,6 +17,7 @@ use Neos\ContentRepository\Core\Feature\SubtreeTagging\Event\SubtreeWasUntagged;
 use Neos\ContentRepository\Core\Projection\CatchUpHook\CatchUpHookInterface;
 use Neos\ContentRepository\Core\Projection\ContentGraph\ContentGraphReadModelInterface;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindDescendantNodesFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
@@ -32,10 +33,10 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
     protected bool $handleEvents = false;
 
     public function __construct(
-        private readonly ContentRepositoryId $contentRepositoryId,
+        private readonly ContentRepositoryId            $contentRepositoryId,
         private readonly ContentGraphReadModelInterface $contentGraphReadModel,
-        private readonly NodeIndexingManager $nodeIndexingManager,
-        private readonly bool $enabledRealTimeIndexing = true,
+        private readonly NodeIndexingManager            $nodeIndexingManager,
+        private readonly bool                           $enabledRealTimeIndexing = true,
     ) {
     }
 
