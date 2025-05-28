@@ -135,7 +135,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
      * @throws IndexingException
      * @throws \Neos\Eel\Exception
      */
-    protected function extractPropertiesAndFulltext(Node $node, array &$fulltextData, \Closure $nonIndexedPropertyErrorHandler = null): array
+    protected function extractPropertiesAndFulltext(Node $node, array &$fulltextData, ?\Closure $nonIndexedPropertyErrorHandler = null): array
     {
         $nodePropertiesToBeStoredInIndex = [];
         $contentRepository = $this->contentRepositoryRegistry->get($node->contentRepositoryId);

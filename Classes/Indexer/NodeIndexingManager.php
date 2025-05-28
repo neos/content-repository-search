@@ -78,7 +78,7 @@ class NodeIndexingManager
      * Schedule a node for indexing
      *
      * @param Node $node
-     * @param WorkspaceName $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
+     * @param WorkspaceName|null $targetWorkspace In case this is triggered during publishing, a Workspace will be passed in
      * @return void
      */
     public function indexNode(Node $node, ?WorkspaceName $targetWorkspace = null)
