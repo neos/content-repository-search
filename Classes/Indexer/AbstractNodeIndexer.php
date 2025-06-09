@@ -209,7 +209,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
                 return $references->first();
             }
 
-            return $references;
+            return iterator_to_array($references);
         }
 
         return null;
