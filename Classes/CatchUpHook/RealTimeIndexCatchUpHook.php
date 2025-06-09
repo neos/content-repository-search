@@ -33,10 +33,10 @@ class RealTimeIndexCatchUpHook implements CatchUpHookInterface
     protected bool $handleEvents = false;
 
     public function __construct(
-        private readonly ContentRepositoryId            $contentRepositoryId,
+        private readonly ContentRepositoryId $contentRepositoryId,
         private readonly ContentGraphReadModelInterface $contentGraphReadModel,
-        private readonly NodeIndexingManager            $nodeIndexingManager,
-        private readonly bool                           $enabledRealTimeIndexing = true,
+        private readonly NodeIndexingManager $nodeIndexingManager,
+        private readonly bool $enabledRealTimeIndexing = true,
     ) {
     }
 
