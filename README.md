@@ -20,6 +20,32 @@ Uses a SQLite database for indexing and search and thus can be used without addi
 
 A plugin to offer search functionality to users via Fusion rendering.
 
+## Realtime Indexing (experimental)
+
+Realtime indexing in Neos.ContentRepository.Search >= 5.0 (compatible with Neos 9)
+has SEVERE PERFORMANCE PENALTYS when publishing workspaces. We suggest that you do batch indexing
+in the background instead.
+
+To resolve backreferences (a very common Elasticsearch Use Case for Neos < 9), please now directly
+use the backReferences() FlowQuery operation available in Neos 9.
+
+If you still want to enable this, add the following to the Settings.yaml (but you have been warned).
+
+```yaml
+# Settings.yaml
+
+Neos:
+  ContentRepositoryRegistry:
+    presets:
+      'default':
+        contentGraphProjection:
+          catchUpHooks:
+            'Neos.ContentRepository.Search:RealtimeIndex':
+              factoryObjectName: \Neos\ContentRepository\Search\CatchUpHook\RealTimeIndexCatchUpHookFactory
+
+```
+
+
 ## Inner workings
 
 The NodeIndexingManager listens to signals emitted from Neos Content Repository and the PersistenceManager if
