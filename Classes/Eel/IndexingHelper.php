@@ -123,11 +123,19 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Convert an array of nodes to an array of node identifiers
      *
-     * @param array<Node> $nodes
-     * @return array
+     * Also accepts a single {@see Node} (singular references from the indexer) or null.
+     *
+     * @param array<Node>|iterable<Node>|Node|null $nodes
+     * @return array<string>
      */
     public function convertArrayOfNodesToArrayOfNodeIdentifiers($nodes): array
     {
+        if ($nodes === null) {
+            return [];
+        }
+        if ($nodes instanceof Node) {
+            return [$nodes->aggregateId->value];
+        }
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
             return [];
         }
@@ -142,14 +150,21 @@ class IndexingHelper implements ProtectedContextAwareInterface
     }
 
     /**
-     * Convert an array of nodes to an array of node property
+     * Convert an array of nodes to an array of node property values
      *
-     * @param array<Node> $nodes
-     * @param string $propertyName
-     * @return array
+     * Also accepts a single {@see Node} or null (same semantics as {@see convertArrayOfNodesToArrayOfNodeIdentifiers()}).
+     *
+     * @param array<Node>|iterable<Node>|Node|null $nodes
+     * @return array<mixed>
      */
     public function convertArrayOfNodesToArrayOfNodeProperty($nodes, string $propertyName): array
     {
+        if ($nodes === null) {
+            return [];
+        }
+        if ($nodes instanceof Node) {
+            return [$nodes->getProperty($propertyName)];
+        }
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
             return [];
         }
