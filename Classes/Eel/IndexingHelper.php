@@ -93,7 +93,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Returns an array of node type names including the passed $nodeType and all its supertypes, recursively
      *
-     * @param NodeType $nodeTypeName
+     * @param Node $node
      * @return array<String>
      */
     public function extractNodeTypeNamesAndSupertypes(Node $node): array
@@ -123,19 +123,11 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Convert an array of nodes to an array of node identifiers
      *
-     * Also accepts a single {@see Node} (singular references from the indexer) or null.
-     *
-     * @param array<Node>|iterable<Node>|Node|null $nodes
+     * @param array<Node>|iterable<Node> $nodes
      * @return array<string>
      */
     public function convertArrayOfNodesToArrayOfNodeIdentifiers($nodes): array
     {
-        if ($nodes === null) {
-            return [];
-        }
-        if ($nodes instanceof Node) {
-            return [$nodes->aggregateId->value];
-        }
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
             return [];
         }
@@ -152,19 +144,12 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Convert an array of nodes to an array of node property values
      *
-     * Also accepts a single {@see Node} or null (same semantics as {@see convertArrayOfNodesToArrayOfNodeIdentifiers()}).
-     *
-     * @param array<Node>|iterable<Node>|Node|null $nodes
+     * @param array<Node>|iterable<Node> $nodes
+     * @param string $propertyName
      * @return array<mixed>
      */
     public function convertArrayOfNodesToArrayOfNodeProperty($nodes, string $propertyName): array
     {
-        if ($nodes === null) {
-            return [];
-        }
-        if ($nodes instanceof Node) {
-            return [$nodes->getProperty($propertyName)];
-        }
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
             return [];
         }
