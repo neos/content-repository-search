@@ -93,7 +93,7 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Returns an array of node type names including the passed $nodeType and all its supertypes, recursively
      *
-     * @param NodeType $nodeTypeName
+     * @param Node $node
      * @return array<String>
      */
     public function extractNodeTypeNamesAndSupertypes(Node $node): array
@@ -123,8 +123,8 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Convert an array of nodes to an array of node identifiers
      *
-     * @param array<Node> $nodes
-     * @return array
+     * @param array<Node>|iterable<Node> $nodes
+     * @return array<string>
      */
     public function convertArrayOfNodesToArrayOfNodeIdentifiers($nodes): array
     {
@@ -142,11 +142,11 @@ class IndexingHelper implements ProtectedContextAwareInterface
     }
 
     /**
-     * Convert an array of nodes to an array of node property
+     * Convert an array of nodes to an array of node property values
      *
-     * @param array<Node> $nodes
+     * @param array<Node>|iterable<Node> $nodes
      * @param string $propertyName
-     * @return array
+     * @return array<mixed>
      */
     public function convertArrayOfNodesToArrayOfNodeProperty($nodes, string $propertyName): array
     {
