@@ -268,7 +268,8 @@ class IndexingHelper implements ProtectedContextAwareInterface
             $node->aggregateId,
             FindAncestorNodesFilter::create()
         )->reverse();
-
+        $ancestors = $ancestors->append($node);
+        
         return NodeAggregateIdPath::fromNodes($ancestors)->serializeToString();
     }
 
