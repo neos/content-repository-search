@@ -21,7 +21,7 @@ Neos:
         references:
           indexing: '${Indexing.convertArrayOfNodesToArrayOfNodeIdentifiers(value)}'
         reference:
-          indexing: '${value.identifier}'
+          indexing: '${value.aggregateId.value}'
       defaultContext:
         q: Neos\Eel\FlowQuery\FlowQuery::q
         String: Neos\Eel\Helper\StringHelper
