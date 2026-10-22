@@ -123,11 +123,15 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Convert an array of nodes to an array of node identifiers
      *
-     * @param array<Node> $nodes
+     * @param array<Node>|Node|null $nodes
      * @return array
      */
     public function convertArrayOfNodesToArrayOfNodeIdentifiers($nodes): array
     {
+        if ($nodes instanceof Node) {
+            // references with "maxItems: 1" (formerly "type: reference") are passed as single node
+            $nodes = [$nodes];
+        }
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
             return [];
         }
@@ -144,12 +148,16 @@ class IndexingHelper implements ProtectedContextAwareInterface
     /**
      * Convert an array of nodes to an array of node property
      *
-     * @param array<Node> $nodes
+     * @param array<Node>|Node|null $nodes
      * @param string $propertyName
      * @return array
      */
     public function convertArrayOfNodesToArrayOfNodeProperty($nodes, string $propertyName): array
     {
+        if ($nodes instanceof Node) {
+            // references with "maxItems: 1" (formerly "type: reference") are passed as single node
+            $nodes = [$nodes];
+        }
         if (!is_array($nodes) && !$nodes instanceof \Traversable) {
             return [];
         }
