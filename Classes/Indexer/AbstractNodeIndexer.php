@@ -106,7 +106,7 @@ abstract class AbstractNodeIndexer implements NodeIndexerInterface
     protected function extractFulltext(Node $node, $propertyName, $fulltextExtractionExpression, array &$fulltextIndexOfNode): void
     {
         if ($fulltextExtractionExpression !== '') {
-            $extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, ($node->hasProperty($propertyName) ? $node->getProperty($propertyName) : null));
+            $extractedFulltext = $this->evaluateEelExpression($fulltextExtractionExpression, $node, $propertyName, $this->getNodePropertyValue($node, $propertyName));
 
             if (!is_array($extractedFulltext)) {
                 throw new IndexingException('The fulltext index for property "' . $propertyName . '" of node "' . $node->aggregateId->value . '" could not be retrieved; the Eel expression "' . $fulltextExtractionExpression . '" is no valid fulltext extraction expression.');
