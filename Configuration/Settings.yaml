@@ -20,8 +20,6 @@ Neos:
           indexing: ''
         references:
           indexing: '${Indexing.convertArrayOfNodesToArrayOfNodeIdentifiers(value)}'
-        reference:
-          indexing: '${value.identifier}'
       defaultContext:
         q: Neos\Eel\FlowQuery\FlowQuery::q
         String: Neos\Eel\Helper\StringHelper
