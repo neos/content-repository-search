@@ -14,6 +14,8 @@ Neos:
           indexing: '${value}'
         date:
           indexing: '${(value ? Date.format(value, ''Y-m-d\TH:i:s'') + ''Z'' : null)}'
+        DateTime:
+          indexing: '${(value ? Date.format(value, ''Y-m-d\TH:i:s'') + ''Z'' : null)}'
         Neos\Media\Domain\Model\Video:
           indexing: ''
         Neos\Media\Domain\Model\ImageInterface:
